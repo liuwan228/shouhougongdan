@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div @click="jump()">新建工单</div>
+    <div @click="jump()">新建工单qq</div>
     <div class="aaa"  @click="detail()">工单列表</div>
   </div>
 </template>
