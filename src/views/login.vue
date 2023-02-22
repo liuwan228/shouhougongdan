@@ -12,7 +12,7 @@
           </template>
         </van-field>
         <div class="mgt48">
-          <van-button round block type="info" native-type="submit">提交</van-button>
+          <van-button round block type="info" native-type="submit">提交l </van-button>
         </div>
 
       </van-form>
