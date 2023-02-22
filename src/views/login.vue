@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div class="logo"><img src="../assets/img/login_page.png" alt=""></div>
+    <div class="logo"><img src="~@/assets/img/login_page.png" alt=""></div>
     <div class="title">欧普康视<br />售后工单系统</div>
     <div>
       <van-form @submit="onSubmit">
@@ -15,7 +15,6 @@
         <div class="mgt48">
           <van-button round block type="info" native-type="submit">提交 </van-button>
         </div>
-
       </van-form>
     </div>
     <div class="sub">
@@ -26,6 +25,7 @@
 </template>
 
 <script>
+// import { loginBtn } from "@/api/user";
   export default {
     name: '',
     mixins: [],
@@ -74,7 +74,7 @@
       //   duration: 0 // 持续时间，默认 2000，0 表示持续展示不关闭
       // })
       // try {
-      //   const res = await login(user)
+      //   const res = await loginBtn(user)
       //   console.log('登录成功', res)
       //   this.$toast.success('登录成功')
       // } catch (err) {

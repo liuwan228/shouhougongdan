@@ -1,12 +1,12 @@
 <template>
   <div class="main">
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-        <div class="list">
-          <div class="left">
-            <div class="name" @click="addOrder()">+新建工单</div>
-          </div>
+      <div class="list">
+        <div class="left">
+          <div class="name" @click="addOrder()">+新建工单</div>
         </div>
-      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+      </div>
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getOrderList">
         <div class="list" v-for="(item,index) in orderList" :key="index">
           <div class="left">
             <div class="name">{{item.name}}</div>
@@ -50,35 +50,36 @@
     created() {},
     mounted() {},
     methods: {
-      onLoad() {
-        setTimeout(() => {
-          if (this.refreshing) {
-            this.orderList = [];
-            this.refreshing = false;
-          }
-
-          for (let i = 0; i < 10; i++) {
-            this.list.push(this.list.length + 1);
-          }
-          this.loading = false;
-
-          if (this.list.length >= 40) {
-            this.finished = true;
-          }
-        }, 1000);
+      async getOrderList() {
+        if (this.refreshing) {
+          this.orderList = [];
+          this.refreshing = false;
+        }
+        // const res = await apiGetOrderList(this.query)
+        // let orderList = res.LIST || []
+        this.loading = false;
+        // for (let i = 0; i < orderList.length; i++) {
+        //   let item = orderList[i]
+        //   this.orderList.push(item)
+        // }
+        // this.finished = this.orderList.length >= res.TOTAL_NUM
       },
       onRefresh() {
         // 清空列表数据
         this.finished = false;
-
         // 重新加载数据
         // 将 loading 设置为 true，表示处于加载状态
         this.loading = true;
-        this.onLoad();
+        this.getOrderList();
       },
       addOrder() {
         this.$router.push('./prolist')
       },
+
+      // 跳转
+      // jump(url) {
+      //   this.$router.push(url)
+      // },
       detail() {
         this.$router.push('./detail')
 

@@ -21,10 +21,10 @@
     data() {
       return {
         proList: [{
-          imgUrl: require('../assets/img/pro1.jpg'),
+          imgUrl: require('@/assets/img/pro1.jpg'),
           name: '镜特舒超声波清洗仪I'
         }, {
-          imgUrl: require('../assets/img/pro1.jpg'),
+          imgUrl: require('@/assets/img/pro1.jpg'),
           name: '镜特舒超声波清洗仪I'
         }],
       }
