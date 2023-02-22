@@ -17,8 +17,6 @@
         </div>
       </van-list>
     </van-pull-refresh>
-    <!-- <div @click="jump()">新建工单qq</div> -->
-    <!-- <div class="aaa" @click="detail()">工单列表</div> -->
   </div>
 </template>
 
