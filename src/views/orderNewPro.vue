@@ -1,17 +1,23 @@
 <template>
   <div class="main">
-    <div class="title">请输入 梦戴维智慧润眼台灯 的产品购买信息</div>
-    <van-cell-group>
-      <van-field v-model="value" label="" placeholder="请输入产品序列号" />
-    </van-cell-group>
-    <div class="proImg">
-      <van-uploader :after-read="afterRead" v-model="fileList" preview-size="180px" upload-text="点击上传或拍摄产品铭牌">
+    <div class="title mt24">请输入 梦戴维智慧润眼台灯 的产品购买信息</div>
+    <div class="mt24">
+      <van-cell-group>
+        <van-field v-model="value" label="" placeholder="请输入产品序列号" />
+      </van-cell-group>
+    </div>
+    <div class="proImg mt24">
+      <van-uploader :after-read="afterRead" v-model="fileList" upload-text="点击上传或拍摄产品铭牌">
 
       </van-uploader>
     </div>
-    <div class="buyimg">
+    <div class="buyimg mt24">
       <van-uploader :after-read="afterRead"> </van-uploader>
     </div>
+    <div class="tips">
+      <van-checkbox v-model="checked">找不到购买凭证，同意按出厂日期计算保修期</van-checkbox>
+    </div>
+    <van-button type="primary" block to="/home">登记</van-button>
   </div>
 </template>
 
@@ -23,7 +29,11 @@
     props: {},
     data() {
       return {
-
+        value:'',
+        checked: true,
+        fileList: [{
+          url: 'https://img01.yzcdn.cn/vant/leaf.jpg',
+        }, ],
       }
     },
     computed: {},
@@ -40,18 +50,40 @@
 </script>
 
 <style scoped lang="scss">
+  ::v-deep .van-hairline--top-bottom::after {
+    border-width: 0;
+  }
+
+  .van-cell-group {
+    border: 1px solid #ebedf0;
+  }
+
   .proImg {
     width: 100%;
-    height: 350px;
-    border-radius: 16px;
+    height: 3.5rem;
+    border-radius: .16rem;
     box-sizing: border-box;
-    border: 1px solid #ccc;
+    border: .01rem solid #ccc;
     overflow: hidden;
 
-    ::v-deep .van-uploader__upload {
+    ::v-deep .van-uploader {
       width: 100%;
       height: 100%;
-      box-sizing: border-box;
+
+      .van-uploader__wrapper {
+        width: 100%;
+        height: 100%;
+
+        .van-uploader__upload {
+          width: 100%;
+          height: 100%;
+          box-sizing: border-box;
+          margin: 0;
+        }
+      }
+
     }
+
+
   }
 </style>

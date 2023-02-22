@@ -9,15 +9,21 @@ import 'lib-flexible'
 import { List } from 'vant';
 import { PullRefresh } from 'vant';
 import { Cell, CellGroup } from 'vant';
-import { Field } from 'vant';
+import { Field,Form  } from 'vant';
 import { Uploader } from 'vant';
 
+import { Checkbox} from 'vant';
+import { Button } from 'vant';
+
+Vue.use(Button);
+Vue.use(Checkbox);
 Vue.use(Uploader);
 Vue.use(Field);
 Vue.use(Cell);
 Vue.use(CellGroup);
 Vue.use(PullRefresh);
 Vue.use(List);
+Vue.use(Form);
 Vue.config.productionTip = false
 
 new Vue({

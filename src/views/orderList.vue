@@ -2,7 +2,7 @@
   <div class="main">
     <div class="title">请选择已经登记的产品或登记新产品</div>
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-      <div class="list" v-for="(item,index) in orderProList" :key="index">
+      <div class="list" v-for="(item,index) in orderProList" :key="index" @click="orderQues()">
         <div class="left">
           <div class="name">{{item.name}}</div>
           <div class="sub">{{item.orderTime}}</div>
@@ -42,8 +42,8 @@
     created() {},
     mounted() {},
     methods: {
-      jump() {
-        this.$router.push('./ordernewpro')
+      orderQues() {
+        this.$router.push('./subques')
       },
       orderNewPro() {
         this.$router.push('./ordernewpro')
