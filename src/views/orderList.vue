@@ -1,7 +1,20 @@
 <template>
-  <div>
-    <div class="">已登记产品列表</div>
-    <div class="" @click="jump()">登记新产品</div>
+  <div class="main">
+    <div class="title">请选择已经登记的产品或登记新产品</div>
+    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+      <div class="list" v-for="(item,index) in orderProList" :key="index">
+        <div class="left">
+          <div class="name">{{item.name}}</div>
+          <div class="sub">{{item.orderTime}}</div>
+          <div class="number">序列号：{{item.number}}</div>
+        </div>
+      </div>
+    </van-list>
+    <div class="list">
+      <div class="left">
+        <div class="name" @click="orderNewPro()">+登记新购买的产品</div>
+      </div>
+    </div>
   </div>
 
 </template>
@@ -9,11 +22,20 @@
 <script>
   export default {
     name: '',
-    mixins: [],
     components: {},
     props: {},
     data() {
-      return {}
+      return {
+        orderProList: [{
+          name: '梦戴维智慧润眼台灯',
+          orderTime: '登记时间：2023-1-12',
+          number: 'P2302000001',
+        }, {
+          name: '梦戴维智慧润眼台灯',
+          orderTime: '登记时间：2023-1-12',
+          number: 'P2302000001',
+        }],
+      }
     },
     computed: {},
     watch: {},
@@ -22,9 +44,37 @@
     methods: {
       jump() {
         this.$router.push('./ordernewpro')
+      },
+      orderNewPro() {
+        this.$router.push('./ordernewpro')
       }
     }
   }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+  .title {
+    margin-top: 24px;
+  }
+
+  .left {
+    flex: 1;
+
+    .name {
+      font-size: 28px;
+      color: #0F0F0F;
+      font-weight: 700;
+    }
+
+    .sub {
+      font-size: 12px;
+      color: #666;
+      margin: 8px 0;
+    }
+
+    .number {
+      font-size: 12px;
+      color: #666;
+    }
+  }
+</style>
