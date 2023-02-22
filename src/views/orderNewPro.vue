@@ -1,17 +1,17 @@
 <template>
   <div class="main">
-    <div class="title mt24">请输入 梦戴维智慧润眼台灯 的产品购买信息</div>
+    <div class="title mgt24">请输入 梦戴维智慧润眼台灯 的产品购买信息</div>
     <div class="mt24">
       <van-cell-group>
         <van-field v-model="value" label="" placeholder="请输入产品序列号" />
       </van-cell-group>
     </div>
-    <div class="proImg mt24">
+    <div class="proImg mgt24">
       <van-uploader :after-read="afterRead" v-model="fileList" upload-text="点击上传或拍摄产品铭牌">
 
       </van-uploader>
     </div>
-    <div class="buyimg mt24">
+    <div class="buyimg mgt24">
       <van-uploader :after-read="afterRead"> </van-uploader>
     </div>
     <div class="tips">
