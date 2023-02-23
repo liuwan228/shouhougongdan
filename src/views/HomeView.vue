@@ -1,8 +1,8 @@
 <template>
   <div class="main">
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <div class="mgt24" >
-          <van-button round block icon="plus" type="info">新建工单</van-button>
+      <div class="mgt24">
+        <van-button round block icon="plus" type="info">新建工单</van-button>
       </div>
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getOrderList">
         <div class="list" v-for="(item,index) in orderList" :key="index" @click="orderDetail()">
@@ -36,7 +36,7 @@
           sub: '客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595',
           number: 'P2302000001',
           status: '结束'
-        },{
+        }, {
           name: '梦戴维智慧润眼台灯',
           sub: '客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595',
           number: 'P2302000001',
@@ -100,23 +100,27 @@
   }
 </script>
 <style scoped lang="scss">
+  ::v-deep .van-button--round {
+    border-radius: 16px;
+  }
+
   .left {
     flex: 1;
 
     .name {
-      font-size: 28px;
+      font-size: 30px;
       color: #0F0F0F;
       font-weight: 700;
     }
 
     .sub {
-      font-size: 12px;
+      font-size: 14px;
       color: #666;
-      margin: 8px 0;
+      margin: 12px 0;
     }
 
     .number {
-      font-size: 12px;
+      font-size: 14px;
       color: #666;
     }
   }

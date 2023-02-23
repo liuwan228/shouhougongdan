@@ -13,6 +13,7 @@ body{
     font-size: 14px;
     max-width: 750px;
     margin: 0 auto;
+    background-color: #ececec;
 }
 .main{
     width: 100%;
@@ -22,7 +23,8 @@ body{
 }
 .list{
     width: 100%;
-    border: 1px solid #ccc;
+    background-color: #fff;
+    /* border: 1px solid #ccc; */
     border-radius: 10px;
     height: 200px;
     margin-top: 32px;

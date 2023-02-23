@@ -7,7 +7,7 @@
       <div class="sub">质保期：待确认</div>
     </div>
     <div class="orde_status mgt24">
-      <van-steps direction="vertical" :active="progessList.length-1">
+      <van-steps direction="vertical" :active="progessList.length-1" active-color="#38f">
         <van-step v-for="(item,index) in progessList" :key="index">
           <div class="date">{{item.time}}</div>
           <div class="status">{{item.sub}}</div>
@@ -28,7 +28,7 @@
             <span>收件人：李芳玲</span>
             <span>收件电话：0551-65319181 </span>
             <span>寄出后，请填写如下信息，以便我们跟踪您寄出的产品和给您寄回产品。</span>
-            <div class="mgt24" v-if="progessList.length<2">
+            <div class="mgt24" v-if="progessList.length<12">
               <van-form @submit="onSubmit(query)">
                 <van-field v-model="query.express_name" label="" placeholder="快递公司名称" />
                 <van-field v-model="query.express_num" label="" placeholder="快递单号" />
@@ -43,15 +43,26 @@
 
           </div>
           <!-- 产品已寄回，请等待售后人员收货检测 -->
-
+          <div class="stage3" v-if="item.status=='2' ">
+            <span>寄件快递：韵达</span>
+            <span>寄件单号：YD241546547465</span>
+            <span>寄件人姓名：李芳玲</span>
+            <span>寄件地址：安徽省合肥市高新区望江西路4899号欧普康视</span>
+            <span>电话：0551-65319181 </span>
+          </div>
           <!-- 售后已收到产品，正在进行检测 -->
-
+          <div class="stage4" v-if="item.status=='3' ">
+            <span>工程师有可能与您联系，请保持电话畅通。</span>
+          </div>
           <!-- 售后已完成处理并寄回，请您查收快递 -->
-
+          <div class="stage5" v-if="item.status=='4' ">
+            <span>回寄快递：申通 </span>
+            <span>回寄单号：STxxxxxxxxxxxxxxxxxxx </span>
+            <van-button round block icon="plus"   type="info">确认收件</van-button>
+          </div>
           <!-- 产品已收到，售后流程结束 -->
 
           <!-- 产品问题在保修外，需要您付费维修 -->
-
           <!-- 维修费用已支付，售后正在维修中 -->
         </van-step>
       </van-steps>
@@ -117,24 +128,13 @@
           sub: '售后已完成处理并寄回，请您查收快递',
           back_express_name: '申通',
           back_express_num: 'ST108435135284',
-        }, {
-          time: '2023年2月14日 13:21',
-          status: '5',
-          sub: '产品已收到，售后流程结束',
-        }, {
-          time: '2023年2月13日 10:21',
-          status: '7',
-          sub: '产品问题在保修外，需要您付费维修',
-          pro1_name: '适配器',
-          pro1_money: '34',
-          pro2_name: '主控板',
-          pro2_money: '299',
-          sum: '333'
-        }, {
-          time: '2023年2月14日 10:21',
-          status: '8',
-          sub: '维修费用已支付，售后正在维修中',
-        }]
+        },
+        //  {
+        //   time: '2023年2月14日 13:21',
+        //   status: '5',
+        //   sub: '产品已收到，售后流程结束',
+        // }
+        ]
 
       }
     },
@@ -151,6 +151,10 @@
 </script>
 
 <style scoped lang="scss">
+  ::v-deep .van-button--round {
+    border-radius: 16px;
+  }
+
   .pro_detail {
     .name {
       font-size: 28px;

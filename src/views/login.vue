@@ -19,7 +19,7 @@
     </div>
     <div class="sub">
       <p>热线电话：400-630-0595</p>
-      <p>服务时间：周一到周五 8：30-17:30</p>
+      <p>服务时间：周一到周五 8:30-17:30</p>
     </div>
   </div>
 </template>
@@ -93,6 +93,9 @@
 </script>
 
 <style scoped lang="scss">
+  ::v-deep .van-button--round {
+    border-radius: 16px;
+  }
   .logo {
     width: 100%;
     height: 100px;
