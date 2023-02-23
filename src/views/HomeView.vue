@@ -1,13 +1,11 @@
 <template>
   <div class="main">
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <div class="list">
-        <div class="left">
-          <div class="name" @click="addOrder()">+新建工单</div>
-        </div>
+      <div class="mgt24" >
+          <van-button round block icon="plus" type="info">新建工单</van-button>
       </div>
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getOrderList">
-        <div class="list" v-for="(item,index) in orderList" :key="index">
+        <div class="list" v-for="(item,index) in orderList" :key="index" @click="orderDetail()">
           <div class="left">
             <div class="name">{{item.name}}</div>
             <div class="sub">{{item.sub}}</div>
@@ -21,6 +19,7 @@
 </template>
 
 <script>
+  // import { apiOrderList} from "@/api/home"
   export default {
     name: 'HomeView',
     components: {},
@@ -36,8 +35,22 @@
           name: '梦戴维智慧润眼台灯',
           sub: '客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595',
           number: 'P2302000001',
+          status: '结束'
+        },{
+          name: '梦戴维智慧润眼台灯',
+          sub: '客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595',
+          number: 'P2302000001',
           status: '等待客服联络'
+        }, {
+          name: '梦戴维智慧润眼台灯',
+          sub: '客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595',
+          number: 'P2302000001',
+          status: '结束'
         }],
+        params: {
+          name: "nihao",
+          id: '111'
+        },
         loading: false,
         finished: false,
         refreshing: false,
@@ -53,7 +66,8 @@
           this.orderList = [];
           this.refreshing = false;
         }
-        // const res = await apiGetOrderList(this.query)
+        // const res = await apiOrderList(this.params)
+        // console.log(res,"res")
         // let orderList = res.LIST || []
         this.loading = false;
         // for (let i = 0; i < orderList.length; i++) {
@@ -70,15 +84,15 @@
         this.loading = true;
         this.getOrderList();
       },
-      addOrder() {
-        this.$router.push('./prolist')
-      },
+      // addOrder() {
+      //   this.$router.push('./prolist')
+      // },
 
       // 跳转
-      // jump(url) {
-      //   this.$router.push(url)
-      // },
-      detail() {
+      jump(url) {
+        this.$router.push(url)
+      },
+      orderDetail() {
         this.$router.push('./detail')
 
       }
@@ -108,7 +122,12 @@
   }
 
   .right {
-    width: 20%;
-    margin-left: 8px;
+    width: 15%;
+    margin-left: 16px;
+    color: #1989fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
   }
 </style>
