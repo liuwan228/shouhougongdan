@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div class="font28">请选择已经登记的产品或登记新产品</div>
+    <div class="font30">请选择已经登记的产品或登记新产品</div>
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getOrderProList">
       <div class="list" v-for="(item,index) in orderProList" :key="index">
         <div class="left">
@@ -77,13 +77,13 @@
     flex: 1;
 
     .name {
-      font-size: 28px;
+      font-size: 30px;
       color: #0F0F0F;
       font-weight: 700;
     }
 
     .sub {
-      font-size: 18px;
+      font-size: 20px;
       margin-top: 12px;
       color: #666;
     }

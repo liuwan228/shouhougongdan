@@ -118,7 +118,7 @@
     }
 
     .number {
-      font-size: 12px;
+      font-size: 20px;
       color: #666;
     }
   }

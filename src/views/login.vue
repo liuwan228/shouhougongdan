@@ -5,7 +5,7 @@
     <div>
       <van-form @submit="onSubmit">
         <van-field v-model="param.tel" label="手机号" :rules="userFormRules.tel" placeholder="请输入手机号" type="number"
-          maxlength="11"/>
+          maxlength="11" />
         <van-field v-model="param.yzm" center clearable label="验证码" :rules="userFormRules.yzm" type="number"
           maxlength="6" placeholder="请输入验证码">
           <template #button>
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-// import { loginBtn } from "@/api/user";
+  // import { loginBtn } from "@/api/user";
   export default {
     name: '',
     mixins: [],
@@ -62,30 +62,30 @@
     methods: {
       async onSubmit(values) {
         console.log('submit', values)
-         // 1. 获取表单数据
-      // const user = this.user
+        // 1. 获取表单数据
+        // const user = this.user
 
-      // // TODO: 2. 表单验证
+        // // TODO: 2. 表单验证
 
-      // // 3. 提交表单请求登录
-      // this.$toast.loading({
-      //   message: '登录中...',
-      //   forbidClick: true, // 禁用背景点击
-      //   duration: 0 // 持续时间，默认 2000，0 表示持续展示不关闭
-      // })
-      // try {
-      //   const res = await loginBtn(user)
-      //   console.log('登录成功', res)
-      //   this.$toast.success('登录成功')
-      // } catch (err) {
-      //   if (err.response.status === 400) {
-      //     this.$toast.fail('手机号或验证码错误')
-      //   } else {
-      //     this.$toast.fail('登录失败，请稍后重试')
-      //   }
-      // }
+        // // 3. 提交表单请求登录
+        // this.$toast.loading({
+        //   message: '登录中...',
+        //   forbidClick: true, // 禁用背景点击
+        //   duration: 0 // 持续时间，默认 2000，0 表示持续展示不关闭
+        // })
+        // try {
+        //   const res = await loginBtn(user)
+        //   console.log('登录成功', res)
+        //   this.$toast.success('登录成功')
+        // } catch (err) {
+        //   if (err.response.status === 400) {
+        //     this.$toast.fail('手机号或验证码错误')
+        //   } else {
+        //     this.$toast.fail('登录失败，请稍后重试')
+        //   }
+        // }
 
-      // 4. 根据请求响应结果处理后续操作
+        // 4. 根据请求响应结果处理后续操作
 
       },
     }
@@ -96,6 +96,7 @@
   ::v-deep .van-button--round {
     border-radius: 16px;
   }
+
   .logo {
     width: 100%;
     height: 100px;
@@ -117,5 +118,11 @@
 
   .mgt48 {
     margin: 48px 0;
+  }
+
+  .sub {
+    p {
+      color: #666;
+    }
   }
 </style>
