@@ -60,6 +60,10 @@
     created() {},
     mounted() {},
     methods: {
+
+      // 请求短信验证码接口
+
+      // 登录
       async onSubmit(values) {
         console.log('submit', values)
         // 1. 获取表单数据
