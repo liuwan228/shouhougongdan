@@ -58,9 +58,13 @@
         // }
         // this.finished = this.orderList.length >= res.TOTAL_NUM
       },
+
+      // 提交问题
       orderQues() {
         this.$router.push('./subques')
       },
+
+      // 新登记产品
       orderNewPro() {
         this.$router.push('./ordernewpro')
       }

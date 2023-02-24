@@ -49,9 +49,9 @@
           name: "nihao",
           id: '111'
         },
-        loading: false,
-        finished: false,
-        refreshing: false,
+        loading: false,//加载状态
+        finished: false,//是否加载完成
+        refreshing: false,//刷新
       }
     },
     computed: {},
@@ -59,6 +59,7 @@
     created() {},
     mounted() {},
     methods: {
+      //获取工单列表数据
       async getOrderList() {
         // if (this.refreshing) {
         //   this.orderList = [];
@@ -74,6 +75,8 @@
         // }
         // this.finished = this.orderList.length >= res.TOTAL_NUM
       },
+
+      // 刷新
       onRefresh() {
         // 清空列表数据
         this.finished = false;
@@ -90,6 +93,8 @@
       jump(url) {
         this.$router.push(url)
       },
+
+      // 跳转到工单详情页
       orderDetail() {
         this.$router.push('./detail')
 
