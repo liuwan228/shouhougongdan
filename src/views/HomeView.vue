@@ -7,7 +7,7 @@
           <div class="left">
             <div class="name">{{item.name}}</div>
             <div class="sub">{{item.sub}}</div>
-            <div class="sub">{{item.number}}</div>
+            <div class="number">{{item.number}}</div>
           </div>
           <div class="right" @click="orderDetail()">{{item.status}}</div>
         </div>
@@ -60,10 +60,10 @@
     mounted() {},
     methods: {
       async getOrderList() {
-        if (this.refreshing) {
-          this.orderList = [];
-          this.refreshing = false;
-        }
+        // if (this.refreshing) {
+        //   this.orderList = [];
+        //   this.refreshing = false;
+        // }
         // const res = await apiOrderList(this.params)
         // console.log(res,"res")
         // let orderList = res.LIST || []

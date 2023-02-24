@@ -180,12 +180,11 @@
 
   .orde_status {
     .title {
-      font-size: 28px;
+      font-size: px;
       color: #222;
     }
 
     .sub {
-      font-size: 16px;
       margin-top: 4px;
       color: #666;
     }
