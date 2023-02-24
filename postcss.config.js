@@ -1,13 +1,14 @@
 module.exports = {
-    plugins: {
-        // postcss-pxtorem 插件的版本需要 >= 5.0.0
-        'postcss-pxtorem': {
-            rootValue({
-                file
-            }) {
-                return file.indexOf('vant') !== -1 ? 37.5 : 75;
-            },
-            propList: ['*'],
-        },
-    },
-};
+    plugins: [
+        'autoprefixer',
+        ['postcss-pxtorem', {
+          rootValue: 75, // //75表示750设计稿，37.5表示375设计稿
+          unitPrecision: 3, 
+          propList: ['*'],
+          exclude: /(node_module)/, // 默认false，，过滤/(node_module)/ 。如果想把前端UI框架内的px也转换成rem，就不要过滤
+          mediaQuery: false, // （布尔值）允许在媒体查询中转换px。
+          minPixelValue: 1 // 设置要替换的最小像素值
+        }]
+      ]
+  };
+  

@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div class="title">请选择已经登记的产品或登记新产品</div>
+    <div class="font28">请选择已经登记的产品或登记新产品</div>
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getOrderProList">
       <div class="list" v-for="(item,index) in orderProList" :key="index" @click="orderQues()">
         <div class="left">
@@ -69,8 +69,8 @@
 </script>
 
 <style scoped lang="scss">
-  .title {
-    margin-top: 24px;
+  ::v-deep .van-button--round {
+    border-radius: 16px;
   }
 
   .left {

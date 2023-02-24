@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div class="sub">选择产品类型</div>
+    <div class="font28">请选择产品类型</div>
     <div class="prolist">
       <div class="list" v-for="(item,index) in proList" :key="index" @click="jump()">
         <div class="left">
@@ -42,18 +42,21 @@
 </script>
 
 <style scoped lang="scss">
-.sub{
-  margin-top: 24px;
-}
+
+  .sub {
+    font-size: 16px;
+    margin: 4px 0;
+    color: #666;
+  }
+
   .left {
-    width: 120px;
+    width: 150px;
     height: 100%;
     display: flex;
     align-items: center;
 
     .imgBox {
-
-      width: 120px;
+      width: 100%;
     }
   }
 

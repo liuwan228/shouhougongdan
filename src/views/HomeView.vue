@@ -1,9 +1,7 @@
 <template>
   <div class="main">
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <div class="mgt24">
-        <van-button round block icon="plus" type="info">新建工单</van-button>
-      </div>
+        <van-button round block icon="plus" type="info" @click="jump('./prolist')">新建工单</van-button>
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getOrderList">
         <div class="list" v-for="(item,index) in orderList" :key="index" @click="orderDetail()">
           <div class="left">
@@ -114,20 +112,20 @@
     }
 
     .sub {
-      font-size: 14px;
+      font-size: 20px;
       color: #666;
       margin: 12px 0;
     }
 
     .number {
-      font-size: 14px;
+      font-size: 12px;
       color: #666;
     }
   }
 
   .right {
     width: 15%;
-    margin-left: 16px;
+    margin-left: 24px;
     color: #1989fa;
     display: flex;
     align-items: center;
