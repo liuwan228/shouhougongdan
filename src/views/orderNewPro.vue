@@ -1,23 +1,33 @@
 <template>
   <div class="main">
-    <div class="title mgt24">请输入 梦戴维智慧润眼台灯 的产品购买信息</div>
+    <div class="font30">请输入 <span class="name">梦戴维智慧润眼台灯</span> 的产品购买信息</div>
     <van-form @submit="onSubmit">
       <div class="mgt24">
-        <van-field v-model="value" colon border label="产品序列号" placeholder="请输入产品序列号" />
+        <van-field v-model="value" colon border label="" placeholder="请输入产品序列号" />
       </div>
+      <div class="tips mgt24">上传或拍摄产品铭牌</div>
       <div class="proImg mgt24">
-        <van-field name="uploader" colon label="文件上传">
+        <van-field name="uploader" colon label="">
           <template #input>
             <van-uploader :after-read="afterRead" preview-size="100px" v-model="fileList" upload-text="点击上传">
             </van-uploader>
           </template>
         </van-field>
       </div>
-      <div class="tips">
+      <div class="tips mgt24">上传或拍摄购买凭证<span class="font18">（画面完整并有购买日期,包括发票、盖章收据、电商订单截图等）</span></div>
+      <div class="proImg mgt24">
+        <van-field name="uploader" colon label="">
+          <template #input>
+            <van-uploader :after-read="afterRead" preview-size="100px" v-model="fileList" upload-text="点击上传">
+            </van-uploader>
+          </template>
+        </van-field>
+      </div>
+      <div class="mgt24">
         <van-checkbox v-model="checked" shape="square" icon-size="14px">找不到购买凭证，同意按出厂日期计算保修期</van-checkbox>
       </div>
       <div class="mgt24">
-        <van-button round block icon="plus" @click="onSubmit" type="info">登记</van-button>
+        <van-button round block @click="onSubmit()" type="info">登记</van-button>
       </div>
     </van-form>
 
@@ -59,9 +69,21 @@
     border-width: 0;
   }
 
+  ::v-deep .van-button--round {
+    border-radius: 16px;
+  }
 
-  ::v-deep .van-cell {
-    padding: 0;
+  .name {
+    color: #1989fa;
+  }
+
+  .tips {
+    font-size: 26px;
+
+    .font18 {
+      font-size: 18px;
+      color: #666;
+    }
   }
 
   .proImg {
