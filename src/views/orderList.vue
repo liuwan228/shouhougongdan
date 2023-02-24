@@ -2,7 +2,7 @@
   <div class="main">
     <div class="font28">请选择已经登记的产品或登记新产品</div>
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getOrderProList">
-      <div class="list" v-for="(item,index) in orderProList" :key="index" @click="orderQues()">
+      <div class="list" v-for="(item,index) in orderProList" :key="index">
         <div class="left">
           <div class="name">{{item.name}}</div>
           <div class="sub">{{item.orderTime}}</div>
@@ -10,7 +10,7 @@
         </div>
       </div>
     </van-list>
-    <div class="mgt24" @click="orderNewPro()">
+    <div class="mgt24" >
       <van-button round block icon="plus" type="info">登记新购买的产品</van-button>
     </div>
   </div>
