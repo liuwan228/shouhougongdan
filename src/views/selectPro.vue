@@ -44,8 +44,8 @@
 <style scoped lang="scss">
 
   .sub {
-    font-size: 16px;
-    margin: 4px 0;
+    font-size: 18px;
+    margin-top: 12px;
     color: #666;
   }
 

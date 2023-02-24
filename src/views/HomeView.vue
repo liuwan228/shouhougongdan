@@ -3,13 +3,13 @@
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
         <van-button round block icon="plus" type="info" @click="jump('./prolist')">新建工单</van-button>
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getOrderList">
-        <div class="list" v-for="(item,index) in orderList" :key="index" @click="orderDetail()">
+        <div class="list" v-for="(item,index) in orderList" :key="index" >
           <div class="left">
             <div class="name">{{item.name}}</div>
             <div class="sub">{{item.sub}}</div>
-            <div class="number">{{item.number}}</div>
+            <div class="sub">{{item.number}}</div>
           </div>
-          <div class="right">{{item.status}}</div>
+          <div class="right" @click="orderDetail()">{{item.status}}</div>
         </div>
       </van-list>
     </van-pull-refresh>

@@ -6,11 +6,11 @@
         <div class="left">
           <div class="name">{{item.name}}</div>
           <div class="sub">{{item.orderTime}}</div>
-          <div class="number">序列号：{{item.number}}</div>
+          <div class="sub">序列号：{{item.number}}</div>
         </div>
       </div>
     </van-list>
-    <div class="mgt24" >
+    <div class="mgt24">
       <van-button round block icon="plus" type="info">登记新购买的产品</van-button>
     </div>
   </div>
@@ -83,13 +83,8 @@
     }
 
     .sub {
-      font-size: 12px;
-      color: #666;
-      margin: 8px 0;
-    }
-
-    .number {
-      font-size: 12px;
+      font-size: 18px;
+      margin-top: 12px;
       color: #666;
     }
   }

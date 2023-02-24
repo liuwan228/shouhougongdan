@@ -23,7 +23,12 @@
 
           <!-- 客服已联络，请将产品寄回 -->
           <div class="stage2" v-if="item.status=='1' ">
-            <div class="sub">请注意： · 请将产品问题简述和手机号码写在一张小卡片上，随产品一起寄回。 · 请将产品妥善打包，尽可能使用原包装，并附所有配件。寄到如下地址。</div>
+            <div class="sub">请注意： 
+              <ul>
+                <li>  · 请将产品问题简述和手机号码写在一张小卡片上，随产品一起寄回。</li>
+                <li>· 请将产品妥善打包，尽可能使用原包装，并附所有配件。寄到如下地址。</li>
+              </ul>
+              </div>
             <div class="sub">收件地址：安徽省合肥市高新区望江西路4899号欧普康视</div>
             <div class="sub">收件人：李芳玲</div>
             <div class="sub">收件电话：0551-65319181 </div>
@@ -166,7 +171,7 @@
     }
 
     .pro_sub {
-      font-size: 16px;
+      font-size: 18px;
       margin: 4px 0;
       color: #222;
     }
@@ -181,7 +186,7 @@
 
     .sub {
       font-size: 16px;
-      margin: 4px 0;
+      margin-top: 4px;
       color: #666;
     }
 
@@ -190,11 +195,11 @@
     margin-top: 24px;
     }
    ::v-deep .van-step__circle{
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
     }
    ::v-deep .van-step__circle-container{
-      font-size: 32px;
+      font-size: 36px;
     }
   }
 </style>
