@@ -5,7 +5,7 @@ import store from './store'
 import './assets/css/reset.css'
 import 'lib-flexible'
 
-//引入组件
+//引入vant组件
 import { List } from 'vant';
 import { PullRefresh } from 'vant';
 import { Cell, CellGroup } from 'vant';
