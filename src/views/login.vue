@@ -3,13 +3,15 @@
     <div class="logo"><img src="~@/assets/img/login_page.png" alt=""></div>
     <div class="title">欧普康视<br />售后工单系统</div>
     <div>
-      <van-form @submit="onSubmit">
-        <van-field v-model="param.tel" label="手机号" :rules="userFormRules.tel" placeholder="请输入手机号" type="number"
+      <van-form @submit="onSubmit" ref='form'>
+        <van-field v-model="tel" label="手机号" :rules="userTel" name="tel" placeholder="请输入手机号" type="tel"
           maxlength="11" />
-        <van-field v-model="param.yzm" center clearable label="验证码" :rules="userFormRules.yzm" type="number"
-          maxlength="6" placeholder="请输入验证码">
+        <van-field v-model="yzm" center clearable :rules="[{ required: true, message: '请填写验证码' }]" label="验证码"
+          type="digit" placeholder="请输入验证码">
           <template #button>
-            <van-button native-type="button" size="small" type="info" @click="sendCode()">发送验证码</van-button>
+            <van-button native-type="button" size="small" type="info" @click="sendCode()" :disabled="disabled ">
+              {{codeMsg}}
+            </van-button>
           </template>
         </van-field>
         <div class="mgt48">
@@ -25,7 +27,8 @@
 </template>
 
 <script>
-  // import { loginBtn } from "@/api/user";
+  // import { loginBtn } from "@/api/login";
+  // import { setLocal } from '@/utils/mylocal'
   export default {
     name: '',
     mixins: [],
@@ -33,26 +36,21 @@
     props: {},
     data() {
       return {
-        param: {
-          tel: '',
-          yzm: ''
-        },
-        userFormRules: {
-          tel: [{
-            required: true,
-            message: '手机号不能为空'
-          }, {
-            pattern: /^1[3,4,5,6,7,8][0-9]{9}$/,
-            message: '手机号格式错误'
-          }],
-          yzm: [{
-            required: true,
-            message: '验证码不能为空'
-          }, {
-            pattern: /^d{6}$/,
-            message: '验证码格式错误'
-          }]
-        },
+        disabled: false,
+        codeMsg: '获取验证码',
+        codeNum: 30,
+        tel: '', //手机号
+        yzm: '', //输入验证码
+        code: '',
+        userTel: [{
+          required: true,
+          message: '手机号不能为空'
+        }, {
+          validator: value => {
+            return /^1[23456789]\d{9}$/.test(value);
+          },
+          message: "请输入正确格式的手机号"
+        }],
       }
     },
     computed: {},
@@ -61,39 +59,71 @@
     mounted() {},
     methods: {
 
-      // 请求短信验证码接口
+      // 点击获取验证码
       sendCode() {
-        
+        //验证手机号格式是否正确
+        if (!this.userTel[1].validator(this.tel)) return
+        // 请求短信验证码接口
+        // http // .$axios({ //   url: "/api/code", //   method: "POST", //   data: { //     phone: this.tel //   } // }) // .then(res => { //   if(res.success){ //     this.code = res.data //   }
+
+        this.disabled = true;
+        //倒计时
+        let timer = setInterval(() => {
+          --this.codeNum;
+          this.codeMsg = `${this.codeNum}秒重新发送`;
+        }, 1000)
+        //定时器
+        setTimeout(() => {
+          clearInterval(timer)
+          this.codeNum = 30;
+          this.disabled = false;
+          this.codeMsg = "获取验证码"
+        }, 30000)
       },
       // 登录
-      async onSubmit(values) {
-        console.log('submit', values)
-        // 1. 获取表单数据
-        // const user = this.user
+      async onSubmit() {
 
-        // // TODO: 2. 表单验证
-
-        // // 3. 提交表单请求登录
-        // this.$toast.loading({
-        //   message: '登录中...',
-        //   forbidClick: true, // 禁用背景点击
-        //   duration: 0 // 持续时间，默认 2000，0 表示持续展示不关闭
-        // })
-        // try {
-        //   const res = await loginBtn(user)
-        //   console.log('登录成功', res)
-        //   this.$toast.success('登录成功')
-        // } catch (err) {
-        //   if (err.response.status === 400) {
-        //     this.$toast.fail('手机号或验证码错误')
-        //   } else {
-        //     this.$toast.fail('登录失败，请稍后重试')
-        //   }
+        // if (this.code == this.yzm) {
+        //证明用户输入的验证码是正确的
+        // 发送请求
         // }
+        // 提交表单请求登录
+        this.$toast.loading({
+          message: '登录中...',
+          forbidClick: true, // 禁用背景点击
+          duration: 0 // 持续时间，默认 2000，0 表示持续展示不关闭
+        })
+        try {
+          // const res = await loginBtn({tel:this.tel,yzm:this.yzm})
+          // console.log('登录成功', res)
+          this.$toast('登录成功')
+          // console.log(res.data.data) // {token:xxx,refresh_token:xxx}
+          // 2.0登录成功保存token与refresh_token 到vuex跟localstorage中
+          // this.$store.commit('setUserInfo', res.data.data)
+          // setLocal('userInfo', res.data.data)
+          // 3.0登录成功跳转到首页
+          this.$router.push('./home')
+        } catch (err) {
+          if (err.response.status === 400) {
+            this.$toast.fail('手机号或验证码错误')
+          } else {
+            this.$toast.fail('登录失败，请稍后重试')
+          }
+        }
 
-        // 4. 根据请求响应结果处理后续操作
 
       },
+
+      // 验证信息
+      validate(key) {
+        let bool = true;
+        if (!this.userTel[key].validator.test(this[key])) {
+          //提示信息
+          bool = false;
+          return false;
+        }
+        return bool;
+      }
     }
   }
 </script>
