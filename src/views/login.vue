@@ -9,7 +9,7 @@
         <van-field v-model="param.yzm" center clearable label="验证码" :rules="userFormRules.yzm" type="number"
           maxlength="6" placeholder="请输入验证码">
           <template #button>
-            <van-button native-type="button" size="small" type="info">发送验证码</van-button>
+            <van-button native-type="button" size="small" type="info" @click="sendCode()">发送验证码</van-button>
           </template>
         </van-field>
         <div class="mgt48">
@@ -62,7 +62,9 @@
     methods: {
 
       // 请求短信验证码接口
-
+      sendCode() {
+        
+      },
       // 登录
       async onSubmit(values) {
         console.log('submit', values)
