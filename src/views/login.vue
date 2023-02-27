@@ -29,7 +29,6 @@
 <script>
   // import { loginBtn } from "@/api/login";
   // import { setLocal } from '@/utils/mylocal'
-  // import wx from "weixin-js-sdk";
 
   export default {
     name: '',
@@ -110,50 +109,6 @@
 
 
       },
-      // wxLogin() {
-      //   var tokenTimer = setInterval(() => {
-      //     const token = wx.getStorageSync('token')
-      //     if (!token) {
-      //       let code = this.$zml.zmlLinkParam("code")
-      //       if (code) {
-      //         this.$u.api.h5WxLogin({
-      //           code: code
-      //         }).then(res => {
-      //           if (res.code == 200) {
-      //             clearInterval(tokenTimer)
-      //             // uni.showToast({
-      //             //   title: res.msg
-      //             // })
-      //             wx.setStorageSync("token", res.data)
-      //             this.$zml.getUserinfo()
-      //           } else if (res.code == 300) {
-      //             clearInterval(tokenTimer)
-      //             uni.showToast({
-      //               title: res.msg
-      //             })
-      //             setTimeout(() => {
-      //               uni.navigateTo({
-      //                 url: '/pages/login/loginBind?unionid=' + res.data.unionid
-      //               })
-      //             }, 1000)
-      //           } else {
-      //             uni.showToast({
-      //               title: "授权失败，请稍后重试...",
-      //               icon: 'none'
-      //             })
-      //           }
-      //         })
-      //       } else {
-      //         let redirect_uri = encodeURIComponent(window.location.href)
-      //         window.location.href =
-      //           `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx400f1d4756a0d1be&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect&connect_redirect=1`
-      //       }
-      //     } else {
-      //       clearInterval(tokenTimer)
-      //       this.$zml.getUserinfo()
-      //     }
-      //   }, 5000)
-      // },
       // 验证信息
       validate(key) {
         let bool = true;

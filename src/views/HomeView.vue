@@ -1,9 +1,9 @@
 <template>
   <div class="main">
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-        <van-button round block icon="plus" type="info" @click="jump('./prolist')">新建工单</van-button>
+      <van-button round block icon="plus" type="info" @click="jump('./prolist')">新建工单</van-button>
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getOrderList">
-        <div class="list" v-for="(item,index) in orderList" :key="index" >
+        <div class="list" v-for="(item,index) in orderList" :key="index">
           <div class="left">
             <div class="name" @click="orderDetail()">{{item.name}}</div>
             <div class="sub">{{item.sub}}</div>
@@ -17,7 +17,10 @@
 </template>
 
 <script>
-  // import { apiOrderList} from "@/api/home"
+  import {
+    getWxLogin,
+    apiOrderList
+  } from '@/api/home';
   export default {
     name: 'HomeView',
     components: {},
@@ -49,16 +52,18 @@
           name: "nihao",
           id: '111'
         },
-        loading: false,//加载状态
-        finished: false,//是否加载完成
-        refreshing: false,//刷新
+        loading: false, //加载状态
+        finished: false, //是否加载完成
+        refreshing: false, //刷新
       }
     },
     computed: {},
     watch: {},
-    created() {},
+    created() {
+
+    },
     mounted() {
-      
+      this.wxLogin()
     },
     methods: {
       //获取工单列表数据
@@ -67,8 +72,8 @@
         //   this.orderList = [];
         //   this.refreshing = false;
         // }
-        // const res = await apiOrderList(this.params)
-        // console.log(res,"res")
+        const res = await apiOrderList(this.params)
+        console.log(res, "res")
         // let orderList = res.LIST || []
         this.loading = false;
         // for (let i = 0; i < orderList.length; i++) {
@@ -87,6 +92,66 @@
         this.loading = true;
         this.getOrderList();
       },
+      // wxLogin() {
+      //     console.log(this.getLinkParam("code"), "res")
+
+      //   getWxLogin({code:'63fc5e06-55dc1920-48591e20'}).then(res => {
+      //     console.log(res,"1111")
+      //   })
+      // },
+      wxLogin() {
+        // 定时器，为了让用户授权才能使用，如果没授权，则5秒后重新弹框提示用户授权
+        var tokenTimer = setInterval(() => {
+          // 判断有没有token
+          const token = window.localStorage.getItem('token')
+          if (!token) {
+            // 获取地址栏后面的参数code
+            let code = this.getLinkParam("code")
+            // 如果有code，则需要用code换取token
+            if (code) {
+              // 接口需要自己定义
+              getWxLogin({
+                code: code
+              }).then(res => {
+                console.log(res,"res")
+                if (res.code == 200) {
+                  clearInterval(tokenTimer) // 清除定时器
+                  this.$toast('授权成功') // 提示用户授权成功
+                  window.localStorage.setItem("token", res.data) // 保存token到本地
+                  // this.getOrderList() // 获取用户信息接口，自己定义的
+                } else {
+                  this.$toast({
+                    message: "授权失败，请稍后重试...",
+                    icon: 'none'
+                  })
+                }
+              })
+            } else {
+              // 如果没有code，则需要进行微信授权
+              let redirect_uri = encodeURIComponent(window.location.href); // 回调地址
+              let appid = 'wxb59c24f73ec56ad0'; // 公众号appId（重要！！！）
+              window.location.href =
+                `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect&connect_redirect=1`
+            }
+          } else {
+            /**
+             * 有token,说明已经授权了，
+             * 需要调用获取用户信息接口，自己定义的
+             * 并清除定时器
+             */
+            clearInterval(tokenTimer)
+            // this.getOrderList() // 获取用户信息接口，自己定义的
+          }
+        }, 5000)
+      },
+
+      // 获取地址栏链接中某个参数的值 (仅H5)
+      getLinkParam(paramName) {
+        var reg = new RegExp("(^|&)" + paramName + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+      },
       // addOrder() {
       //   this.$router.push('./prolist')
       // },
@@ -95,7 +160,6 @@
       jump(url) {
         this.$router.push(url)
       },
-
       // 跳转到工单详情页
       orderDetail() {
         this.$router.push('./detail')
