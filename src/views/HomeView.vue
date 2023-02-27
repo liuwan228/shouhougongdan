@@ -57,7 +57,9 @@
     computed: {},
     watch: {},
     created() {},
-    mounted() {},
+    mounted() {
+      
+    },
     methods: {
       //获取工单列表数据
       async getOrderList() {

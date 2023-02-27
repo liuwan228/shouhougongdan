@@ -10,8 +10,8 @@
         <div class="mgt24 uploadImg">
           <van-field name="uploader" label="">
             <template #input>
-              <van-uploader :after-read="afterRead" :before-read="beforeRead" preview-size="80px" v-model="fileList"
-                upload-text="点击上传">
+              <van-uploader :after-read="afterRead" :before-delete="beforeDelete" :before-read="beforeRead"
+                preview-size="80px" v-model="fileList" upload-text="点击上传">
               </van-uploader>
             </template>
           </van-field>
@@ -25,62 +25,71 @@
 </template>
 
 <script>
-
-export default {
-  name: '',
-  mixins: [],
-  components: {},
-  props: {},
-  data() {
-    return {
-      value: '',
-      fileList: [],
-    }
-  },
-  computed: {},
-  watch: {},
-  created() { },
-  mounted() { },
-  methods: {
-    onSubmit(values) {
-      console.log('submit', values);
-    },
-    afterRead(file) {
-      // 此时可以自行将文件上传至服务器
-      console.log(file, "file");
-
-    },
-
-    beforeRead(file) {
-      if (file.type !== "image/jpg") {
-        this.$toast("请上传 jpg 格式图片");
-        return false;
+  export default {
+    name: '',
+    mixins: [],
+    components: {},
+    props: {},
+    data() {
+      return {
+        value: '',
+        fileList: [],
       }
-      return true;
+    },
+    computed: {},
+    watch: {},
+    created() {},
+    mounted() {},
+    methods: {
+      onSubmit(values) {
+        console.log('submit', values);
+      },
+
+      beforeRead(file) {
+        if (file.type !== 'image/jpeg' || file.type !== 'image/jpg' || file.type !== 'image/png') {
+          this.$toast('请上传图片格式');
+          return false;
+        }
+        return true;
+      },
+      afterRead(file) {
+        // 此时可以自行将文件上传至服务器
+        //创建FormData对象。上传图片需要转换二进制，这里要用到FormData
+        console.log(file, "上传后file");
+        var formdata = new FormData();
+        //"file"表示给后台传的属性名字 
+        formdata.append('file', file.file);
+        //向后台发送相应请求
+      },
+      //图片删除前回调，删除时将公共变量forms中的文件信息一并删除
+      beforeDelete(file) {
+        console.log(file, "删除file");
+
+      },
+
     }
   }
-}
 </script>
 
 <style scoped lang="scss">
-::v-deep .van-button--round {
-  border-radius: 16px;
-}
-
-.text {
-  ::v-deep .van-cell {
-    border-radius: 12px;
+  ::v-deep .van-button--round {
+    border-radius: 16px;
   }
-}
 
-.name {
-  color: #1989fa;
-}
-
-.uploadImg {
-  ::v-deep .van-cell {
-    height: 350px;
-    border-radius: 12px;
+  .text {
+    ::v-deep .van-cell {
+      border-radius: 12px;
+    }
   }
-}
+
+  .name {
+    color: #1989fa;
+  }
+
+  .uploadImg {
+    ::v-deep .van-cell {
+      height: 350px;
+      border-radius: 12px;
+    }
+  }
 </style>
