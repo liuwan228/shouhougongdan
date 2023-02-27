@@ -10,7 +10,8 @@
         <div class="mgt24 uploadImg">
           <van-field name="uploader" label="">
             <template #input>
-              <van-uploader :after-read="afterRead" preview-size="80px" v-model="fileList" upload-text="点击上传">
+              <van-uploader :after-read="afterRead" :before-read="beforeRead" preview-size="80px" v-model="fileList"
+                upload-text="点击上传">
               </van-uploader>
             </template>
           </van-field>
@@ -24,52 +25,62 @@
 </template>
 
 <script>
-  export default {
-    name: '',
-    mixins: [],
-    components: {},
-    props: {},
-    data() {
-      return {
-        value: '',
-        fileList: [],
-      }
+
+export default {
+  name: '',
+  mixins: [],
+  components: {},
+  props: {},
+  data() {
+    return {
+      value: '',
+      fileList: [],
+    }
+  },
+  computed: {},
+  watch: {},
+  created() { },
+  mounted() { },
+  methods: {
+    onSubmit(values) {
+      console.log('submit', values);
     },
-    computed: {},
-    watch: {},
-    created() {},
-    mounted() {},
-    methods: {
-      onSubmit(values) {
-        console.log('submit', values);
-      },
-      afterRead(file) {
-        // 此时可以自行将文件上传至服务器
-        console.log(file);
-      },
+    afterRead(file) {
+      // 此时可以自行将文件上传至服务器
+      console.log(file, "file");
+
+    },
+
+    beforeRead(file) {
+      if (file.type !== "image/jpg") {
+        this.$toast("请上传 jpg 格式图片");
+        return false;
+      }
+      return true;
     }
   }
+}
 </script>
 
 <style scoped lang="scss">
-  ::v-deep .van-button--round {
-    border-radius: 16px;
-  }
+::v-deep .van-button--round {
+  border-radius: 16px;
+}
 
-  .text {
-    ::v-deep .van-cell {
-      border-radius: 12px;
-    }
+.text {
+  ::v-deep .van-cell {
+    border-radius: 12px;
   }
+}
 
-  .name {
-    color: #1989fa;
-  }
+.name {
+  color: #1989fa;
+}
 
-  .uploadImg {
-   ::v-deep .van-cell {
-      height: 350px;
-      border-radius: 12px;
-    }
+.uploadImg {
+  ::v-deep .van-cell {
+    height: 350px;
+    border-radius: 12px;
   }
+}
 </style>

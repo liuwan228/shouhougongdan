@@ -5,7 +5,7 @@
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getOrderList">
         <div class="list" v-for="(item,index) in orderList" :key="index" >
           <div class="left">
-            <div class="name">{{item.name}}</div>
+            <div class="name" @click="orderDetail()">{{item.name}}</div>
             <div class="sub">{{item.sub}}</div>
             <div class="number">{{item.number}}</div>
           </div>
