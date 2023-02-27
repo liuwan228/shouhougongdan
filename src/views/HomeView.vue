@@ -72,7 +72,7 @@
         //   this.orderList = [];
         //   this.refreshing = false;
         // }
-        const res = await apiOrderList(this.params)
+        const res = await apiOrderList()
         console.log(res, "res")
         // let orderList = res.LIST || []
         this.loading = false;
@@ -92,30 +92,23 @@
         this.loading = true;
         this.getOrderList();
       },
-      // wxLogin() {
-      //     console.log(this.getLinkParam("code"), "res")
-
-      //   getWxLogin({code:'63fc5e06-55dc1920-48591e20'}).then(res => {
-      //     console.log(res,"1111")
-      //   })
-      // },
       wxLogin() {
         // 定时器，为了让用户授权才能使用，如果没授权，则5秒后重新弹框提示用户授权
-        var tokenTimer = setInterval(() => {
+        // var tokenTimer = setInterval(() => {
           // 判断有没有token
           const token = window.localStorage.getItem('token')
           if (!token) {
             // 获取地址栏后面的参数code
-            let code = this.getLinkParam("code")
+            let code = this.getParam(window.location.href,'code')
             // 如果有code，则需要用code换取token
             if (code) {
               // 接口需要自己定义
               getWxLogin({
                 code: code
               }).then(res => {
-                console.log(res,"res")
+                console.log(res, "res")
                 if (res.code == 200) {
-                  clearInterval(tokenTimer) // 清除定时器
+                  // clearInterval(tokenTimer) // 清除定时器
                   this.$toast('授权成功') // 提示用户授权成功
                   window.localStorage.setItem("token", res.data) // 保存token到本地
                   // this.getOrderList() // 获取用户信息接口，自己定义的
@@ -131,7 +124,7 @@
               let redirect_uri = encodeURIComponent(window.location.href); // 回调地址
               let appid = 'wxb59c24f73ec56ad0'; // 公众号appId（重要！！！）
               window.location.href =
-                `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect&connect_redirect=1`
+                `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect&connect_redirect=1`
             }
           } else {
             /**
@@ -139,18 +132,21 @@
              * 需要调用获取用户信息接口，自己定义的
              * 并清除定时器
              */
-            clearInterval(tokenTimer)
+            // clearInterval(tokenTimer)
             // this.getOrderList() // 获取用户信息接口，自己定义的
           }
-        }, 5000)
+        // }, 8000)
       },
 
       // 获取地址栏链接中某个参数的值 (仅H5)
-      getLinkParam(paramName) {
-        var reg = new RegExp("(^|&)" + paramName + "=([^&]*)(&|$)");
-        var r = window.location.search.substr(1).match(reg);
-        if (r != null) return unescape(r[2]);
-        return null;
+      getParam(url, key) {
+        var pattern = new RegExp('[?&]*' + key + '=([^&]+)');
+        try {
+          var value = url.match(pattern)[1];
+          return value;
+        } catch (err) {
+          return null;
+        }
       },
       // addOrder() {
       //   this.$router.push('./prolist')

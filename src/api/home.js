@@ -11,11 +11,14 @@ import request from '@/utils/request'
 // }
 
 
-// code
+// code  
 export function getWxLogin(data) {
   return request({
     url: '/api/wx/gd',
-    method: 'GET',
+    method: 'POST',
     data,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
   })
 }
