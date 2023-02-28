@@ -59,9 +59,7 @@
     },
     computed: {},
     watch: {},
-    created() {
-
-    },
+    created() {},
     mounted() {
       this.wxLogin()
     },
@@ -95,46 +93,52 @@
       wxLogin() {
         // 定时器，为了让用户授权才能使用，如果没授权，则5秒后重新弹框提示用户授权
         // var tokenTimer = setInterval(() => {
-          // 判断有没有token
-          const token = window.localStorage.getItem('token')
-          if (!token) {
-            // 获取地址栏后面的参数code
-            let code = this.getParam(window.location.href,'code')
-            // 如果有code，则需要用code换取token
-            if (code) {
-              // 接口需要自己定义
-              getWxLogin({
-                code: code
-              }).then(res => {
-                console.log(res, "res")
-                if (res.code == 200) {
-                  // clearInterval(tokenTimer) // 清除定时器
-                  this.$toast('授权成功') // 提示用户授权成功
-                  window.localStorage.setItem("token", res.data) // 保存token到本地
-                  // this.getOrderList() // 获取用户信息接口，自己定义的
-                } else {
-                  this.$toast({
-                    message: "授权失败，请稍后重试...",
-                    icon: 'none'
-                  })
-                }
-              })
-            } else {
-              // 如果没有code，则需要进行微信授权
-              let redirect_uri = encodeURIComponent(window.location.href); // 回调地址
-              let appid = 'wxb59c24f73ec56ad0'; // 公众号appId（重要！！！）
-              window.location.href =
-                `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect&connect_redirect=1`
-            }
+        // 判断有没有token
+        // const token = window.localStorage.getItem('token')
+        const token = 'sss'
+        if (!token) {
+          // 获取地址栏后面的参数code
+          let code = this.getParam(window.location.href, 'code')
+          // 如果有code，则需要用code换取token
+          if (code) {
+            // 接口需要自己定义
+            getWxLogin({
+              code: code
+            }).then(res => {
+              console.log(res, "res")
+              if (res.status == 0) {
+                // clearInterval(tokenTimer) // 清除定时器
+
+                //判断是否注册
+                // 如果已经注册的
+                this.$toast('授权成功') // 提示用户授权成功
+                window.localStorage.setItem("token", res.data) // 保存token到本地
+                // this.getOrderList() // 获取用户信息接口，自己定义的
+                //未注册跳转到注册页，携带openId
+
+              } else {
+                this.$toast({
+                  message: "授权失败，请稍后重试...",
+                  icon: 'none'
+                })
+              }
+            })
           } else {
-            /**
-             * 有token,说明已经授权了，
-             * 需要调用获取用户信息接口，自己定义的
-             * 并清除定时器
-             */
-            // clearInterval(tokenTimer)
-            // this.getOrderList() // 获取用户信息接口，自己定义的
+            // 如果没有code，则需要进行微信授权
+            let redirect_uri = encodeURIComponent(window.location.href); // 回调地址
+            let appid = 'wxb59c24f73ec56ad0'; // 公众号appId（重要！！！）
+            window.location.href =
+              `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect&connect_redirect=1`
           }
+        } else {
+          /**
+           * 有token,说明已经授权了，
+           * 需要调用获取用户信息接口，自己定义的
+           * 并清除定时器
+           */
+          // clearInterval(tokenTimer)
+          // this.getOrderList() // 获取用户信息接口，自己定义的
+        }
         // }, 8000)
       },
 
