@@ -96,7 +96,7 @@
         // var tokenTimer = setInterval(() => {
         // 判断有没有token
         const token = window.localStorage.getItem('token')
-        // const token = 'sss'
+        // const token = '0086F7AEE3CE6A3395481A84F7D61172'
         if (!token) {
           // 获取地址栏后面的参数code
           let code = this.getParam(window.location.href, 'code')
@@ -140,6 +140,7 @@
            * 并清除定时器
            */
           // clearInterval(tokenTimer)
+          console.log("已经有token了")
           this.getOrderList() // 获取用户信息接口，自己定义的
         }
         // }, 8000)

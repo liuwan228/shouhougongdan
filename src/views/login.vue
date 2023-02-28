@@ -62,16 +62,17 @@
     created() {},
     mounted() {},
     methods: {
-
       // 点击获取验证码
       sendCode() {
         //验证手机号格式是否正确
         if (!this.userTel[1].validator(this.tel)) return
         // 请求短信验证码接口
-        // http // .$axios({ //   url: "/api/code", //   method: "POST", //   data: { //     phone: this.tel //   } // }) // .then(res => { //   if(res.success){ //     this.code = res.data //   }
         apiGetCode({
           mobile: this.tel
         }).then((res) => {
+          if (res.status == 0) {
+            this.$toast('验证码已发送')
+          }
           console.log("验证码", res)
         })
         this.disabled = true;
@@ -89,37 +90,27 @@
         }, 30000)
       },
       // 登录
-      async onSubmit() {
+      onSubmit() {
         // 提交表单请求登录
         this.$toast.loading({
           message: '登录中...',
           forbidClick: true, // 禁用背景点击
           duration: 0 // 持续时间，默认 2000，0 表示持续展示不关闭
         })
-        try {
-          const res = await loginBtn({
-            tel: this.tel,
-            yzm: this.yzm,
-            openid: this.$store.state.openid
-          })
-          console.log('登录成功', res)
-          this.$toast('登录成功')
-          // console.log(res.data.data) // {token:xxx,refresh_token:xxx}
-          // 2.0登录成功保存token与refresh_token 到vuex跟localstorage中
-          window.localStorage.setItem("token", res.token) // 保存token到本地
-          this.$store.commit('setUserId', res.userid)
-          // setLocal('userInfo', res.data.data)
-          // 3.0登录成功跳转到首页
-          this.$router.push('./home')
-        } catch (err) {
-          if (err.response.status === 400) {
-            this.$toast.fail('手机号或验证码错误')
+        loginBtn({ mobile: this.tel, yzm: this.yzm, openid: this.$store.state.openid }).then((res) => {
+          if (res.status == 0) {
+            console.log('登录成功', res)
+            this.$toast('登录成功')
+            window.localStorage.setItem("token", res.token) // 保存token到本地
+            this.$store.commit('setUserId', res.userid)
+            // setLocal('userInfo', res.data.data)
+            // 3.0登录成功跳转到首页
+            this.$router.push('./home')
           } else {
-            this.$toast.fail('登录失败，请稍后重试')
+            this.$toast(res.errMsg);
+            return false;
           }
-        }
-
-
+        })
       },
       // 验证信息
       validate(key) {
