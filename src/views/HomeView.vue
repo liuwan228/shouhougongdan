@@ -17,9 +17,9 @@
 </template>
 
 <script>
+  import axios from "axios";
   import {
-    getWxLogin,
-    apiOrderList
+    apiGetUserInfo
   } from '@/api/home';
   export default {
     name: 'HomeView',
@@ -55,6 +55,7 @@
         loading: false, //加载状态
         finished: false, //是否加载完成
         refreshing: false, //刷新
+        openid: '',
       }
     },
     computed: {},
@@ -70,8 +71,8 @@
         //   this.orderList = [];
         //   this.refreshing = false;
         // }
-        const res = await apiOrderList()
-        console.log(res, "res")
+        // const res = await apiOrderList()
+        // console.log(res, "res")
         // let orderList = res.LIST || []
         this.loading = false;
         // for (let i = 0; i < orderList.length; i++) {
@@ -94,25 +95,27 @@
         // 定时器，为了让用户授权才能使用，如果没授权，则5秒后重新弹框提示用户授权
         // var tokenTimer = setInterval(() => {
         // 判断有没有token
-        // const token = window.localStorage.getItem('token')
-        const token = 'sss'
+        const token = window.localStorage.getItem('token')
+        // const token = 'sss'
         if (!token) {
           // 获取地址栏后面的参数code
           let code = this.getParam(window.location.href, 'code')
           // 如果有code，则需要用code换取token
           if (code) {
             // 接口需要自己定义
-            getWxLogin({
+            axios.post('http://oppay.orthok.cn/api/wx/gd', {
               code: code
-            }).then(res => {
-              console.log(res, "res")
-              if (res.status == 0) {
+            },{headers: { 'content-type': 'application/x-www-form-urlencoded' }}).then(res => {
+              console.log(res, "resssssssss")
+              const data=res.data
+              if (data.status == 0) {
                 // clearInterval(tokenTimer) // 清除定时器
-
-                //判断是否注册
-                // 如果已经注册的
                 this.$toast('授权成功') // 提示用户授权成功
-                window.localStorage.setItem("token", res.data) // 保存token到本地
+                  console.log(data, "data")
+                // window.localStorage.setItem("token", res.data) // 保存token到本地
+                this.openid = data.openid
+                this.$store.commit('setOpenId', data.openid)
+                this.getUserInfo()
                 // this.getOrderList() // 获取用户信息接口，自己定义的
                 //未注册跳转到注册页，携带openId
 
@@ -137,7 +140,7 @@
            * 并清除定时器
            */
           // clearInterval(tokenTimer)
-          // this.getOrderList() // 获取用户信息接口，自己定义的
+          this.getOrderList() // 获取用户信息接口，自己定义的
         }
         // }, 8000)
       },
@@ -152,6 +155,20 @@
           return null;
         }
       },
+
+      // 根据openid获取用户信息
+      async getUserInfo() {
+        let res = await apiGetUserInfo({ openid: this.openid })
+        console.log(res, "用户信息")
+        if (res.status == 0) {
+          this.$store.commit('setUserId', res.userid)
+          window.localStorage.setItem("userid", res.userid)
+          this.getOrderList()
+        } else {
+          this.$router.push('./login')
+        }
+      },
+
       // addOrder() {
       //   this.$router.push('./prolist')
       // },

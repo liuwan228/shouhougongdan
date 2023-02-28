@@ -27,7 +27,10 @@
 </template>
 
 <script>
-  // import { loginBtn } from "@/api/login";
+  import {
+    loginBtn,
+    apiGetCode
+  } from "@/api/login";
   // import { setLocal } from '@/utils/mylocal'
 
   export default {
@@ -66,7 +69,11 @@
         if (!this.userTel[1].validator(this.tel)) return
         // 请求短信验证码接口
         // http // .$axios({ //   url: "/api/code", //   method: "POST", //   data: { //     phone: this.tel //   } // }) // .then(res => { //   if(res.success){ //     this.code = res.data //   }
-
+        apiGetCode({
+          mobile: this.tel
+        }).then((res) => {
+          console.log("验证码", res)
+        })
         this.disabled = true;
         //倒计时
         let timer = setInterval(() => {
@@ -90,12 +97,17 @@
           duration: 0 // 持续时间，默认 2000，0 表示持续展示不关闭
         })
         try {
-          // const res = await loginBtn({tel:this.tel,yzm:this.yzm})
-          // console.log('登录成功', res)
+          const res = await loginBtn({
+            tel: this.tel,
+            yzm: this.yzm,
+            openid: this.$store.state.openid
+          })
+          console.log('登录成功', res)
           this.$toast('登录成功')
           // console.log(res.data.data) // {token:xxx,refresh_token:xxx}
           // 2.0登录成功保存token与refresh_token 到vuex跟localstorage中
-          // this.$store.commit('setUserInfo', res.data.data)
+          window.localStorage.setItem("token", res.token) // 保存token到本地
+          this.$store.commit('setUserId', res.userid)
           // setLocal('userInfo', res.data.data)
           // 3.0登录成功跳转到首页
           this.$router.push('./home')

@@ -5,16 +5,16 @@ import request from '@/utils/request'
 // export function apiOrderList(data) {
 //   return request({
 //     url: '/api/wx/gd',
-//     method: 'GET',
+//     method: 'POST',
 //     data,
 //   })
 // }
 
 
-// code  
-export function getWxLogin(data) {
+// 获取用户信息  
+export function apiGetUserInfo(data) {
   return request({
-    url: '/api/wx/gd',
+    url: '/getUserInfo.shtml',
     method: 'POST',
     data,
     headers: {

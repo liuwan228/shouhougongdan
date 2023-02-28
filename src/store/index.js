@@ -10,6 +10,8 @@ export default new Vuex.Store({
       // 在项目打开时应该从localStorage中取出来userInfo在vuex中
       userInfo: getLocal('userInfo') || {}
     },
+    userId:'',//用户Id
+    openid:'',//openid
   },
   getters: {},
   mutations: {
@@ -17,7 +19,15 @@ export default new Vuex.Store({
     setUserInfo(state, payload) {
       // 给state里的userInfo赋值
       state.userInfo = payload
-    }
+    },
+    setUserId(state, payload) {
+      // 给state里的userId赋值
+      state.userId = payload
+    },
+    setOpenId(state, payload) {
+      // 给state里的openid赋值
+      state.openid = payload
+    },
   },
   actions: {},
   modules: {}
