@@ -103,7 +103,7 @@
           // 如果有code，则需要用code换取token
           if (code) {
             // 接口需要自己定义
-            axios.post('http://oppay.orthok.cn/api/wx/gd', {
+            axios.post('https://oppay.orthok.cn/api/wx/gd', {
               code: code
             },{headers: { 'content-type': 'application/x-www-form-urlencoded' }}).then(res => {
               console.log(res, "resssssssss")
@@ -112,7 +112,7 @@
                 // clearInterval(tokenTimer) // 清除定时器
                 this.$toast('授权成功') // 提示用户授权成功
                   console.log(data, "data")
-                // window.localStorage.setItem("token", res.data) // 保存token到本地
+                
                 this.openid = data.openid
                 this.$store.commit('setOpenId', data.openid)
                 this.getUserInfo()
@@ -164,6 +164,7 @@
         if (res.status == 0) {
           this.$store.commit('setUserId', res.userid)
           window.localStorage.setItem("userid", res.userid)
+          window.localStorage.setItem("token", res.token) // 保存token到本地
           this.getOrderList()
         } else {
           this.$router.push('./login')
