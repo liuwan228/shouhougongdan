@@ -37,9 +37,9 @@
               <van-form @submit="onSubmit(query)">
                 <van-field v-model="query.express_name" label="" placeholder="快递公司名称" />
                 <van-field v-model="query.express_num" label="" placeholder="快递单号" />
-                <van-field v-model="query.person_name" label="" placeholder="收件人姓名" />
-                <van-field v-model="query.person_tel" label="" placeholder="收件人手机" />
-                <van-field v-model="query.person_address" label="" placeholder="收件人地址" />
+                <van-field v-model="query.person_name" label="" placeholder="寄件人姓名" />
+                <van-field v-model="query.person_tel" label="" placeholder="寄件人手机" />
+                <van-field v-model="query.person_address" label="" placeholder="寄件人地址" />
                 <div class="mgt24">
                   <van-button round block type="info" native-type="submit">提交</van-button>
                 </div>
@@ -180,8 +180,8 @@
 
   .orde_status {
     .title {
-      font-size: px;
-      color: #222;
+      font-size: 30px;
+      color: #1989fa;
     }
 
     .sub {

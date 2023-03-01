@@ -18,9 +18,7 @@
 
 <script>
   import axios from "axios";
-  import {
-    apiGetUserInfo
-  } from '@/api/home';
+  import { apiGetUserInfo } from '@/api/home';
   export default {
     name: 'HomeView',
     components: {},
@@ -97,9 +95,11 @@
         // 判断有没有token
         const token = window.localStorage.getItem('token')
         // const token = '0086F7AEE3CE6A3395481A84F7D61172'
+        console.log("token",token)
         if (!token) {
           // 获取地址栏后面的参数code
           let code = this.getParam(window.location.href, 'code')
+          console.log(code, "code")
           // 如果有code，则需要用code换取token
           if (code) {
             // 接口需要自己定义
@@ -140,7 +140,7 @@
            * 并清除定时器
            */
           // clearInterval(tokenTimer)
-          console.log("已经有token了")
+          console.log("已经有token了",token)
           this.getOrderList() // 获取用户信息接口，自己定义的
         }
         // }, 8000)

@@ -58,7 +58,7 @@
       },
       onSubmit(values) {
         console.log('submit', values);
-        this.$router.push('./orderlist')
+        this.$router.push('./subques')
       },
     }
   }
