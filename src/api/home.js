@@ -41,7 +41,7 @@ export function apiOrderList(data) {
 // 登记新购买产品
 export function apiOrderPro(data) {
   return request({
-    url: '/sell_add..shtml',
+    url: '/sell_add.shtml',
     method: 'POST',
     data,
   })

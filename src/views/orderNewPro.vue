@@ -9,7 +9,7 @@
       <div class="proImg mgt24">
         <van-field name="uploader" colon label="">
           <template #input>
-            <van-uploader :after-read="afterRead" preview-size="100px" v-model="fileList" upload-text="点击上传">
+            <van-uploader :after-read="afterRead" preview-size="100px" v-model="markPhotoList" upload-text="点击上传">
             </van-uploader>
           </template>
         </van-field>
@@ -18,7 +18,7 @@
       <div class="proImg mgt24">
         <van-field name="uploader" colon label="">
           <template #input>
-            <van-uploader :after-read="afterRead" preview-size="100px" v-model="fileList" upload-text="点击上传">
+            <van-uploader :after-read="afterRead" preview-size="100px" v-model="billList" upload-text="点击上传">
             </van-uploader>
           </template>
         </van-field>
@@ -27,7 +27,7 @@
         <van-checkbox v-model="checked" shape="square" icon-size="14px">找不到购买凭证，同意按出厂日期计算保修期</van-checkbox>
       </div>
       <div class="mgt24">
-        <van-button round block @click="onSubmit()" type="info">登记</van-button>
+        <van-button round block @click="onSubmit" type="info">登记</van-button>
       </div>
     </van-form>
 
@@ -35,7 +35,9 @@
 </template>
 
 <script>
-  import { apiOrderPro } from '@/api/home';
+  import {
+    apiOrderPro
+  } from '@/api/home';
   export default {
     name: '',
     mixins: [],
@@ -45,29 +47,40 @@
       return {
         value: '',
         checked: true,
-        fileList: [],
+        markPhotoList: [], //铭牌
+        billList: [], //发票
       }
     },
     computed: {},
     watch: {},
-    created() {
-    },
+    created() {},
     mounted() {},
     methods: {
+      //校验图片的格式
+      beforeRead(file) {
+        if (!/(jpg|jpeg|png|JPG|PNG)/i.test(file.type)) {
+          this.$toast("请上传正确格式的图片");
+          return false;
+        }
+        return true;
+      },
       afterRead(file) {
         // 此时可以自行将文件上传至服务器
         console.log(file);
       },
-     async onSubmit(values) {
+      async onSubmit(values) {
         console.log('submit', values);
         console.log('submit', this.$store.state.userId);
-        let params={
-          // userId:this.$store.state.userId,
-          // token:window.localStorage.getItem('token'),
-          produitId:'1111',
-          SN:'2432sdraet',
+        let params = {
+          userId: this.$store.state.userId,
+          token: window.localStorage.getItem('token'),
+          produitId: '1111',
+          SN: '2432sdraet',
+          markPhoto: this.markPhotoList,
+          billPhoto: this.billList,
+          isByManufacture: '1'
         };
-        const res=await apiOrderPro(params)
+        const res = await apiOrderPro(params)
         console.log('res', res);
         this.$router.push('./subques')
       },
