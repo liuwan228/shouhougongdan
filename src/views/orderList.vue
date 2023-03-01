@@ -18,6 +18,7 @@
 </template>
 
 <script>
+  import { apiProList } from '@/api/home';
   export default {
     name: '',
     components: {},
@@ -48,15 +49,15 @@
           this.orderList = [];
           this.refreshing = false;
         }
-        // const res = await apiOrderList(this.params)
-        // console.log(res,"res")
-        // let orderList = res.LIST || []
+        const res = await apiProList(this.params)
+        console.log(res,"res")
+        let orderList = res.list || []
         this.loading = false;
-        // for (let i = 0; i < orderList.length; i++) {
-        //   let item = orderList[i]
-        //   this.orderList.push(item)
-        // }
-        // this.finished = this.orderList.length >= res.TOTAL_NUM
+        for (let i = 0; i < orderList.length; i++) {
+          let item = orderList[i]
+          this.orderList.push(item)
+        }
+        this.finished = this.orderList.length >= res.list.length
       },
 
       // 提交问题

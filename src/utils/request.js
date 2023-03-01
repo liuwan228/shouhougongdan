@@ -3,7 +3,7 @@ import axios from "axios";
 const service = axios.create({
     // 请求接口地址
     //   baseURL: 'http://127.0.0.1:8888',
-    baseURL: "https://orderadmintest.orthok.cn/service",
+    baseURL: "http://orderadmintest.orthok.cn/service",
     // 设置延迟时间
     timeout: 3000,
     headers: {
