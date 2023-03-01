@@ -2,11 +2,11 @@
   <div class="main">
     <div class="font30">请选择产品类型</div>
     <div class="prolist">
-      <div class="list" v-for="(item,index) in proList" :key="index" @click="jump()">
+      <div class="list" v-for="(item,index) in proList" :key="index" @click="jump(item.id)">
         <div class="left">
-          <img class="imgBox" :src="item.imgUrl" alt="">
+          <img class="imgBox" :src="item.photo" alt="">
         </div>
-        <div class="right">{{item.name}}</div>
+        <div class="right">{{item.proName}}</div>
       </div>
     </div>
     <div class="sub">角膜塑形镜、减离焦镜片等其他产品的售后服务，请咨询购买渠道。</div>
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+  import { apiProList } from '@/api/home';
   export default {
     name: '',
     components: {},
@@ -32,17 +33,24 @@
     computed: {},
     watch: {},
     created() {},
-    mounted() {},
+    mounted() {
+      this.getProductType()
+    },
     methods: {
-      jump() {
-        this.$router.push('./orderlist')
+      async getProductType() {
+        const res = await apiProList()
+        if (res.status == 0) {
+          this.proList = res.list || []
+        }
+      },
+      jump(id) {
+        this.$router.push({path:'./orderlist',query:{id:id}})
       }
     }
   }
 </script>
 
 <style scoped lang="scss">
-
   .sub {
     font-size: 20px;
     margin-top: 12px;
@@ -54,6 +62,7 @@
     height: 100%;
     display: flex;
     align-items: center;
+    margin-right: 24px;
 
     .imgBox {
       width: 100%;

@@ -10,7 +10,7 @@ export default new Vuex.Store({
       // 在项目打开时应该从localStorage中取出来userInfo在vuex中
       userInfo: getLocal('userInfo') || {}
     },
-    userId:'',//用户Id
+    userId:'12324',//用户Id
     openid:'',//openid
   },
   getters: {},

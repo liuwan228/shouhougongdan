@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="font30">请选择已经登记的产品或登记新产品</div>
-    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getOrderProList">
+    <van-list  @load="getOrderProList">
       <div class="list" v-for="(item,index) in orderProList" :key="index" @click="orderQues()">
         <div class="left">
           <div class="name">{{item.name}}</div>
@@ -18,16 +18,16 @@
 </template>
 
 <script>
-  import { apiProList } from '@/api/home';
+  // import {
+  //   apiOrderList
+  // } from '@/api/home';
   export default {
     name: '',
     components: {},
     props: {},
     data() {
       return {
-        loading: false,
-        finished: false,
-        refreshing: false,
+        typeId: '',
         orderProList: [{
           name: '梦戴维智慧润眼台灯',
           orderTime: '登记时间：2023-1-12',
@@ -41,23 +41,21 @@
     },
     computed: {},
     watch: {},
-    created() {},
-    mounted() {},
+    created() {
+      this.typeId = this.$route.query.id
+      console.log(this.typeId, "typeId")
+    },
+    mounted() {
+      // this.getOrderProList()
+    },
     methods: {
       async getOrderProList() {
-        if (this.refreshing) {
-          this.orderList = [];
-          this.refreshing = false;
-        }
-        const res = await apiProList(this.params)
-        console.log(res,"res")
-        let orderList = res.list || []
-        this.loading = false;
-        for (let i = 0; i < orderList.length; i++) {
-          let item = orderList[i]
-          this.orderList.push(item)
-        }
-        this.finished = this.orderList.length >= res.list.length
+        // const res = await apiOrderList(this.params)
+        // if (res.status == 0) {
+        //   this.orderProList = res.list || []
+        // }
+        // console.log(res, "res")
+
       },
 
       // 提交问题

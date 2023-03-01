@@ -35,6 +35,7 @@
 </template>
 
 <script>
+  import { apiOrderPro } from '@/api/home';
   export default {
     name: '',
     mixins: [],
@@ -49,15 +50,25 @@
     },
     computed: {},
     watch: {},
-    created() {},
+    created() {
+    },
     mounted() {},
     methods: {
       afterRead(file) {
         // 此时可以自行将文件上传至服务器
         console.log(file);
       },
-      onSubmit(values) {
+     async onSubmit(values) {
         console.log('submit', values);
+        console.log('submit', this.$store.state.userId);
+        let params={
+          // userId:this.$store.state.userId,
+          // token:window.localStorage.getItem('token'),
+          produitId:'1111',
+          SN:'2432sdraet',
+        };
+        const res=await apiOrderPro(params)
+        console.log('res', res);
         this.$router.push('./subques')
       },
     }

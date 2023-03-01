@@ -20,10 +20,28 @@ export function apiGetUserInfo(data) {
   })
 }
 
-// 产品列表
+// 产品类型列表
 export function apiProList(data) {
   return request({
     url: '/products.shtml',
+    method: 'POST',
+    data,
+  })
+}
+
+// 已登记产品列表
+export function apiOrderList(data) {
+  return request({
+    url: '/products.shtml',
+    method: 'POST',
+    data,
+  })
+}
+
+// 登记新购买产品
+export function apiOrderPro(data) {
+  return request({
+    url: '/sell_add..shtml',
     method: 'POST',
     data,
   })
