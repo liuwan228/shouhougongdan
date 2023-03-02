@@ -60,7 +60,8 @@
     watch: {},
     created() {},
     mounted() {
-      this.wxLogin()
+      // this.wxLogin()
+      this.getUserInfo()
     },
     methods: {
       //获取工单列表数据
@@ -93,8 +94,8 @@
         // 定时器，为了让用户授权才能使用，如果没授权，则5秒后重新弹框提示用户授权
         // var tokenTimer = setInterval(() => {
         // 判断有没有token
-        // const token = window.localStorage.getItem('token')
-        const token = '0086F7AEE3CE6A3395481A84F7D61172'
+        const token = window.localStorage.getItem('token')
+        // const token = '0086F7AEE3CE6A3395481A84F7D61172'
         console.log("token",token)
         if (!token) {
           // 获取地址栏后面的参数code
@@ -159,7 +160,8 @@
 
       // 根据openid获取用户信息
       async getUserInfo() {
-        let res = await apiGetUserInfo({ openid: this.openid })
+        // let res = await apiGetUserInfo({ openid: this.openid })
+        let res = await apiGetUserInfo({ openid: 'oDK9buLD1yUsgWB1ffSWwVU0GKQ4' })
         console.log(res, "用户信息")
         if (res.status == 0) {
           this.$store.commit('setUserId', res.userid)

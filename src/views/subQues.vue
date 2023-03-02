@@ -10,7 +10,7 @@
         <div class="mgt24 uploadImg">
           <van-field name="uploader" label="">
             <template #input>
-              <van-uploader :after-read="afterRead" :before-delete="beforeDelete" :before-read="beforeRead"
+              <van-uploader :after-read="afterRead" max-count="4" multiple  :before-delete="beforeDelete" :before-read="beforeRead"
                 preview-size="80px" v-model="fileList" upload-text="点击上传">
               </van-uploader>
             </template>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import axios from 'axios';
   export default {
     name: '',
     mixins: [],
@@ -46,8 +47,8 @@
       },
 
       beforeRead(file) {
-        if (file.type !== 'image/jpeg' || file.type !== 'image/jpg' || file.type !== 'image/png') {
-          this.$toast('请上传图片格式');
+         if (!/(jpg|jpeg|png|JPG|PNG)/i.test(file.type)) {
+          this.$toast("请上传正确格式的图片");
           return false;
         }
         return true;
@@ -56,15 +57,40 @@
         // 此时可以自行将文件上传至服务器
         //创建FormData对象。上传图片需要转换二进制，这里要用到FormData
         console.log(file, "上传后file");
-        var formdata = new FormData();
+        const formdata = new FormData();
         //"file"表示给后台传的属性名字 
         formdata.append('file', file.file);
+        if(file instanceof Array && file.length){
+          file.forEach(item=>{
+            item.status = 'uploading';
+            item.message = '上传中...';
+            formdata.append("file",item.file)
+          })
+        }else{
+          file.status = 'uploading';
+          file.message = '上传中...';
+          formdata.append("file",file.file)
+        }
         //向后台发送相应请求
+        axios.post('https://img2.orthok.cn/api/service/index', formdata, {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          }
+        }).then(res => {
+          const data = res.data
+          if (data.status == 0) {
+            this.markPhoto = data.filename
+            file.status = 'done';
+            file.message = '成功';
+          } else {
+            this.$toast('上传失败')
+          }
+        })
       },
       //图片删除前回调，删除时将公共变量forms中的文件信息一并删除
       beforeDelete(file) {
         console.log(file, "删除file");
-
+        
       },
 
     }

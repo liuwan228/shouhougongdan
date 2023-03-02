@@ -1,12 +1,12 @@
 <template>
   <div class="main">
     <div class="font30">请选择已经登记的产品或登记新产品</div>
-    <van-list  @load="getOrderProList">
+    <van-list @load="getOrderProList">
       <div class="list" v-for="(item,index) in orderProList" :key="index" @click="orderQues()">
         <div class="left">
-          <div class="name">{{item.name}}</div>
-          <div class="sub">{{item.orderTime}}</div>
-          <div class="sub">序列号：{{item.number}}</div>
+          <div class="name">{{item.proName}}</div>
+          <div class="sub">{{item.addtime}}</div>
+          <div class="sub">序列号：{{item.SN}}</div>
         </div>
       </div>
     </van-list>
@@ -18,9 +18,9 @@
 </template>
 
 <script>
-  // import {
-  //   apiOrderList
-  // } from '@/api/home';
+  import {
+    apiOrderList
+  } from '@/api/home';
   export default {
     name: '',
     components: {},
@@ -28,15 +28,7 @@
     data() {
       return {
         typeId: '',
-        orderProList: [{
-          name: '梦戴维智慧润眼台灯',
-          orderTime: '登记时间：2023-1-12',
-          number: 'P2302000001',
-        }, {
-          name: '梦戴维智慧润眼台灯',
-          orderTime: '登记时间：2023-1-12',
-          number: 'P2302000001',
-        }],
+        orderProList: [],
       }
     },
     computed: {},
@@ -50,12 +42,15 @@
     },
     methods: {
       async getOrderProList() {
-        // const res = await apiOrderList(this.params)
-        // if (res.status == 0) {
-        //   this.orderProList = res.list || []
-        // }
-        // console.log(res, "res")
-
+        let params = {
+          userId: window.localStorage.getItem("userid"),
+          token: window.localStorage.getItem('token')
+        }
+        console.log(params, "params")
+        const res = await apiOrderList(params)
+        if (res.status == 0) {
+          this.orderProList = res.list || []
+        }
       },
 
       // 提交问题
@@ -65,7 +60,7 @@
 
       // 新登记产品
       orderNewPro() {
-        this.$router.push('./ordernewpro')
+        this.$router.push({path:'./ordernewpro',query:{id:this.typeId}})
       }
     }
   }

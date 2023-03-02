@@ -32,7 +32,7 @@ export function apiProList(data) {
 // 已登记产品列表
 export function apiOrderList(data) {
   return request({
-    url: '/products.shtml',
+    url: '/sell_list.shtml',
     method: 'POST',
     data,
   })

@@ -9,8 +9,8 @@
       <div class="proImg mgt24">
         <van-field name="uploader" colon label="">
           <template #input>
-            <van-uploader :after-read="afterReadMark" @delete="deleteImg" multiple preview-size="100px" v-model="markPhotoList"
-              upload-text="点击上传">
+            <van-uploader :after-read="afterReadMark" :before-read="beforeRead" @delete="deleteImg" max-count="1" preview-size="100px"
+              v-model="markPhotoList" upload-text="点击上传">
             </van-uploader>
           </template>
         </van-field>
@@ -19,7 +19,8 @@
       <div class="proImg mgt24">
         <van-field name="uploader" colon label="">
           <template #input>
-            <van-uploader :after-read="afterRead" multiple preview-size="100px" v-model="billList" upload-text="点击上传">
+            <van-uploader :after-read="afterRead" :before-read="beforeRead" max-count="1" preview-size="100px" v-model="billList"
+              upload-text="点击上传">
             </van-uploader>
           </template>
         </van-field>
@@ -36,6 +37,7 @@
 </template>
 
 <script>
+  import axios from "axios"
   import {
     apiOrderPro
   } from '@/api/home';
@@ -48,14 +50,21 @@
       return {
         value: '',
         checked: true,
-        uploadImage: [],
+        markPhoto: '', //铭片地址
+        billPhoto: '',
         markPhotoList: [], //铭牌
         billList: [], //发票
+        produitId:'',//产品id
       }
     },
     computed: {},
-    watch: {},
-    created() {},
+    watch: {
+
+    },
+    created() {
+      this.produitId = this.$route.query.id
+      console.log(this.produitId, "produitId")
+    },
     mounted() {},
     methods: {
       //校验图片的格式
@@ -67,18 +76,51 @@
         return true;
       },
       afterReadMark(file) {
-        console.log(file)
-        if (file instanceof Array && file.length) {
-          file.forEach(item => {
-            this.uploadImage.push(item.file)
-          })
-        } else {
-          this.uploadImage.push(file.file)
-        }
-        console.log(this.uploadImage, "this.markPhotoList");
+        let formData = new FormData();
+        formData.append("file", file.file);
+        file.status = 'uploading';
+        file.message = '上传中...';
         // 此时可以自行将文件上传至服务器
+        axios.post('https://img2.orthok.cn/api/service/index', formData, {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          }
+        }).then(res => {
+          const data = res.data
+          if (data.status == 0) {
+            this.markPhoto = data.filename
+            file.status = 'done';
+            file.message = '成功';
+          } else {
+            this.$toast('上传失败')
+          }
+        })
+        console.log(this.markPhoto, "this.markPhoto")
       },
-      afterRead() {},
+      //上传购买凭证
+      afterRead(file) {
+        let formData = new FormData();
+        formData.append("file", file.file);
+         file.status = 'uploading';
+        file.message = '上传中...';
+        axios.post('https://img2.orthok.cn/api/service/index', formData, {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          }
+        }).then(res => {
+          const data = res.data
+          if (data.status == 0) {
+            this.billPhoto = data.filename
+             file.status = 'done';
+            file.message = '成功';
+          } else {
+            this.$toast('上传失败')
+          }
+        })
+        console.log(this.billPhoto, "this.billPhoto")
+
+      },
+
       //删除方法
       deleteImg(file) {
         for (let i = 0, len = this.uploadImage.length; i < len; i++) {
@@ -87,23 +129,28 @@
             break
           }
         }
-        console.log(this.uploadImage,"删除后的")
+        console.log(this.uploadImage, "删除后的")
       },
 
       async onSubmit() {
-        console.log('submit', this.value);
         let params = {
           userId: this.$store.state.userId,
           token: window.localStorage.getItem('token'),
-          produitId: '1111',
+          // token:'0086F7AEE3CE6A3395481A84F7D61172',
+          produitId: this.produitId,
           SN: this.value,
-          markPhoto: this.markPhotoList,
-          billPhoto: this.billList,
-          isByManufacture: '1'
+          markPhoto: this.markPhoto,
+          billPhoto: this.billPhoto,
+          isByManufacture: this.checked?'1':'0'
         };
         const res = await apiOrderPro(params)
-        console.log('res', res);
-        // this.$router.push('./subques')
+        if(res.status==0){
+          this.sellId=res.sellId
+          this.$router.push('./subques')
+        }else{
+          this.$toast(res.errMsg);
+        }
+        
       },
     }
   }
