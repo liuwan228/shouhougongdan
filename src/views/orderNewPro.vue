@@ -9,8 +9,8 @@
       <div class="proImg mgt24">
         <van-field name="uploader" colon label="">
           <template #input>
-            <van-uploader :after-read="afterReadMark" :before-read="beforeRead" @delete="deleteImg" max-count="1" preview-size="100px"
-              v-model="markPhotoList" upload-text="点击上传">
+            <van-uploader :after-read="afterReadMark" :before-read="beforeRead" @delete="deleteImg" max-count="1"
+              preview-size="100px" v-model="markPhotoList" upload-text="点击上传">
             </van-uploader>
           </template>
         </van-field>
@@ -19,8 +19,8 @@
       <div class="proImg mgt24">
         <van-field name="uploader" colon label="">
           <template #input>
-            <van-uploader :after-read="afterRead" :before-read="beforeRead" max-count="1" preview-size="100px" v-model="billList"
-              upload-text="点击上传">
+            <van-uploader :after-read="afterRead" :before-read="beforeRead" max-count="1" preview-size="100px"
+              v-model="billList" upload-text="点击上传">
             </van-uploader>
           </template>
         </van-field>
@@ -54,7 +54,7 @@
         billPhoto: '',
         markPhotoList: [], //铭牌
         billList: [], //发票
-        produitId:'',//产品id
+        produitId: '', //产品id
       }
     },
     computed: {},
@@ -76,16 +76,7 @@
         return true;
       },
       afterReadMark(file) {
-        let formData = new FormData();
-        formData.append("file", file.file);
-        file.status = 'uploading';
-        file.message = '上传中...';
-        // 此时可以自行将文件上传至服务器
-        axios.post('https://img2.orthok.cn/api/service/index', formData, {
-          headers: {
-            'content-type': 'application/x-www-form-urlencoded'
-          }
-        }).then(res => {
+        this.uploadImg(file).then((res) => {
           const data = res.data
           if (data.status == 0) {
             this.markPhoto = data.filename
@@ -99,28 +90,30 @@
       },
       //上传购买凭证
       afterRead(file) {
-        let formData = new FormData();
-        formData.append("file", file.file);
-         file.status = 'uploading';
-        file.message = '上传中...';
-        axios.post('https://img2.orthok.cn/api/service/index', formData, {
-          headers: {
-            'content-type': 'application/x-www-form-urlencoded'
-          }
-        }).then(res => {
+        this.uploadImg(file).then((res) => {
           const data = res.data
           if (data.status == 0) {
             this.billPhoto = data.filename
-             file.status = 'done';
+            file.status = 'done';
             file.message = '成功';
           } else {
             this.$toast('上传失败')
           }
         })
         console.log(this.billPhoto, "this.billPhoto")
-
       },
-
+      //上传图片接口
+      uploadImg(file) {
+        let formData = new FormData();
+        formData.append("file", file.file);
+        file.status = 'uploading';
+        file.message = '上传中...';
+        return axios.post('https://img2.orthok.cn/api/service/index', formData, {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          }
+        })
+      },
       //删除方法
       deleteImg(file) {
         for (let i = 0, len = this.uploadImage.length; i < len; i++) {
@@ -141,16 +134,16 @@
           SN: this.value,
           markPhoto: this.markPhoto,
           billPhoto: this.billPhoto,
-          isByManufacture: this.checked?'1':'0'
+          isByManufacture: this.checked ? '1' : '0'
         };
         const res = await apiOrderPro(params)
-        if(res.status==0){
-          this.sellId=res.sellId
+        if (res.status == 0) {
+          this.sellId = res.sellId
           this.$router.push('./subques')
-        }else{
+        } else {
           this.$toast(res.errMsg);
         }
-        
+
       },
     }
   }
