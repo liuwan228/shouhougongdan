@@ -59,6 +59,7 @@
     },
     computed: {},
     watch: {},
+    
     created() {},
     mounted() {},
     methods: {
@@ -102,7 +103,7 @@
             console.log('登录成功', res)
             this.$toast('登录成功')
             window.localStorage.setItem("token", res.token) // 保存token到本地
-            this.$store.commit('setUserId', res.userid)
+            this.$store.commit('setUserId', res.userId)
             // setLocal('userInfo', res.data.data)
             // 3.0登录成功跳转到首页
             this.$router.push('./home')

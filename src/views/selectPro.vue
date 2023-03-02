@@ -2,7 +2,7 @@
   <div class="main">
     <div class="font30">请选择产品类型</div>
     <div class="prolist">
-      <div class="list" v-for="(item,index) in proList" :key="index" @click="jump(item.id)">
+      <div class="list" v-for="(item,index) in proList" :key="index" @click="jump(item.produitId)">
         <div class="left">
           <img class="imgBox" :src="item.photo" alt="">
         </div>

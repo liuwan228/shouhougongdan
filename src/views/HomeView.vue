@@ -164,8 +164,8 @@
         let res = await apiGetUserInfo({ openid: 'oDK9buLD1yUsgWB1ffSWwVU0GKQ4' })
         console.log(res, "用户信息")
         if (res.status == 0) {
-          this.$store.commit('setUserId', res.userid)
-          window.localStorage.setItem("userid", res.userid)
+          this.$store.commit('setUserId', res.userId)
+          window.localStorage.setItem("userId", res.userId)
           window.localStorage.setItem("token", res.token) // 保存token到本地
           this.getOrderList()
         } else {
