@@ -9,7 +9,8 @@
       <div class="proImg mgt24">
         <van-field name="uploader" colon label="">
           <template #input>
-            <van-uploader :after-read="afterRead" preview-size="100px" v-model="markPhotoList" upload-text="点击上传">
+            <van-uploader :after-read="afterReadMark" @delete="deleteImg" multiple preview-size="100px" v-model="markPhotoList"
+              upload-text="点击上传">
             </van-uploader>
           </template>
         </van-field>
@@ -18,7 +19,7 @@
       <div class="proImg mgt24">
         <van-field name="uploader" colon label="">
           <template #input>
-            <van-uploader :after-read="afterRead" preview-size="100px" v-model="billList" upload-text="点击上传">
+            <van-uploader :after-read="afterRead" multiple preview-size="100px" v-model="billList" upload-text="点击上传">
             </van-uploader>
           </template>
         </van-field>
@@ -47,6 +48,7 @@
       return {
         value: '',
         checked: true,
+        uploadImage: [],
         markPhotoList: [], //铭牌
         billList: [], //发票
       }
@@ -64,25 +66,44 @@
         }
         return true;
       },
-      afterRead(file) {
+      afterReadMark(file) {
+        console.log(file)
+        if (file instanceof Array && file.length) {
+          file.forEach(item => {
+            this.uploadImage.push(item.file)
+          })
+        } else {
+          this.uploadImage.push(file.file)
+        }
+        console.log(this.uploadImage, "this.markPhotoList");
         // 此时可以自行将文件上传至服务器
-        console.log(file);
       },
-      async onSubmit(values) {
-        console.log('submit', values);
-        console.log('submit', this.$store.state.userId);
+      afterRead() {},
+      //删除方法
+      deleteImg(file) {
+        for (let i = 0, len = this.uploadImage.length; i < len; i++) {
+          if (file.file.name === this.uploadImage[i].name && file.file.size === this.uploadImage[i].size) {
+            this.uploadImage.splice(i, 1)
+            break
+          }
+        }
+        console.log(this.uploadImage,"删除后的")
+      },
+
+      async onSubmit() {
+        console.log('submit', this.value);
         let params = {
           userId: this.$store.state.userId,
           token: window.localStorage.getItem('token'),
           produitId: '1111',
-          SN: '2432sdraet',
+          SN: this.value,
           markPhoto: this.markPhotoList,
           billPhoto: this.billList,
           isByManufacture: '1'
         };
         const res = await apiOrderPro(params)
         console.log('res', res);
-        this.$router.push('./subques')
+        // this.$router.push('./subques')
       },
     }
   }
