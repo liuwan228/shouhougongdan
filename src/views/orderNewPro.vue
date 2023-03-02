@@ -9,8 +9,8 @@
       <div class="proImg mgt24">
         <van-field name="uploader" colon label="">
           <template #input>
-            <van-uploader :after-read="afterReadMark" :before-read="beforeRead" @delete="deleteImg" max-count="1"
-              preview-size="100px" v-model="markPhotoList" upload-text="点击上传">
+            <van-uploader :after-read="afterReadMark" :before-read="beforeRead" max-count="1" preview-size="100px"
+              v-model="markPhotoList" upload-text="点击上传">
             </van-uploader>
           </template>
         </van-field>
@@ -82,11 +82,11 @@
             this.markPhoto = data.filename
             file.status = 'done';
             file.message = '成功';
+            console.log(this.markPhoto, "this.markPhoto")
           } else {
             this.$toast('上传失败')
           }
         })
-        console.log(this.markPhoto, "this.markPhoto")
       },
       //上传购买凭证
       afterRead(file) {
@@ -114,18 +114,8 @@
           }
         })
       },
-      //删除方法
-      deleteImg(file) {
-        for (let i = 0, len = this.uploadImage.length; i < len; i++) {
-          if (file.file.name === this.uploadImage[i].name && file.file.size === this.uploadImage[i].size) {
-            this.uploadImage.splice(i, 1)
-            break
-          }
-        }
-        console.log(this.uploadImage, "删除后的")
-      },
-
       async onSubmit() {
+        console.log(this.markPhoto, "this.markPhoto222")
         let params = {
           userId: this.$store.state.userId,
           token: window.localStorage.getItem('token'),

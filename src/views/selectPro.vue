@@ -21,13 +21,7 @@
     props: {},
     data() {
       return {
-        proList: [{
-          imgUrl: require('@/assets/img/pro1.jpg'),
-          name: '镜特舒超声波清洗仪I'
-        }, {
-          imgUrl: require('@/assets/img/pro2.jpg'),
-          name: '镜特舒超声波清洗仪I'
-        }],
+        proList: [],
       }
     },
     computed: {},

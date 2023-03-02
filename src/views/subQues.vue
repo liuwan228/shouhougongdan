@@ -10,7 +10,7 @@
         <div class="mgt24 uploadImg">
           <van-field name="uploader" label="">
             <template #input>
-              <van-uploader :after-read="afterRead" max-count="4" multiple  :before-delete="beforeDelete" :before-read="beforeRead"
+              <van-uploader :after-read="afterRead" max-count="4" multiple @delete="deleteImg"  :before-read="beforeRead"
                 preview-size="80px" v-model="fileList" upload-text="点击上传">
               </van-uploader>
             </template>
@@ -87,10 +87,15 @@ import axios from 'axios';
           }
         })
       },
-      //图片删除前回调，删除时将公共变量forms中的文件信息一并删除
-      beforeDelete(file) {
-        console.log(file, "删除file");
-        
+      //删除方法
+      deleteImg(file) {
+        for (let i = 0, len = this.uploadImage.length; i < len; i++) {
+          if (file.file.name === this.uploadImage[i].name && file.file.size === this.uploadImage[i].size) {
+            this.uploadImage.splice(i, 1)
+            break
+          }
+        }
+        console.log(this.uploadImage, "删除后的")
       },
 
     }

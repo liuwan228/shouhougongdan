@@ -60,8 +60,8 @@
     watch: {},
     created() {},
     mounted() {
-      // this.wxLogin()
-      this.getUserInfo()
+      this.wxLogin()
+      // this.getUserInfo()
     },
     methods: {
       //获取工单列表数据
@@ -117,7 +117,7 @@
                 this.openid = data.openid
                 this.$store.commit('setOpenId', data.openid)
                 this.getUserInfo()
-                // this.getOrderList() // 获取用户信息接口，自己定义的
+                this.getOrderList() // 获取用户信息接口，自己定义的
                 //未注册跳转到注册页，携带openId
 
               } else {
@@ -160,8 +160,8 @@
 
       // 根据openid获取用户信息
       async getUserInfo() {
-        // let res = await apiGetUserInfo({ openid: this.openid })
-        let res = await apiGetUserInfo({ openid: 'oDK9buLD1yUsgWB1ffSWwVU0GKQ4' })
+        let res = await apiGetUserInfo({ openid: this.openid })
+        // let res = await apiGetUserInfo({ openid: 'oDK9buLD1yUsgWB1ffSWwVU0GKQ4' })
         console.log(res, "用户信息")
         if (res.status == 0) {
           this.$store.commit('setUserId', res.userId)
