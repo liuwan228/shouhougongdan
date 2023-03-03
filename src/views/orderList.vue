@@ -19,7 +19,7 @@
 
 <script>
   import {
-    apiOrderList
+    apiSellList
   } from '@/api/home';
   import { mapState } from 'vuex'
   export default {
@@ -45,7 +45,7 @@
           produitId:this.productInfo.produitId,
         }
         console.log(params, "params")
-        const res = await apiOrderList(params)
+        const res = await apiSellList(params)
         if (res.status == 0) {
           this.orderProList = res.list || []
         }

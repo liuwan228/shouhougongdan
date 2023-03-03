@@ -2,9 +2,9 @@ import request from '@/utils/request'
 
 
 // 工单列表
-export function apiSellList(data) {
+export function apiOrderList(data) {
   return request({
-    url: '/sell_list.shtml',
+    url: '/order_list.shtml',
     method: 'POST',
     data,
   })
@@ -30,7 +30,7 @@ export function apiProList(data) {
 }
 
 // 已登记产品列表
-export function apiOrderList(data) {
+export function apiSellList(data) {
   return request({
     url: '/sell_list.shtml',
     method: 'POST',

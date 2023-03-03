@@ -5,11 +5,11 @@
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了">
       <div class="list" v-for="(item,index) in orderList" :key="index">
         <div class="left">
-          <div class="name" @click="orderDetail()">{{item.name}}</div>
-          <div class="sub">{{item.sub}}</div>
-          <div class="number">{{item.number}}</div>
+          <div class="name" @click="orderDetail()">{{item.proName}}</div>
+          <div class="sub">客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595</div>
+          <div class="number">{{item.bianhao}}</div>
         </div>
-        <div class="right" @click="orderDetail()">{{item.status}}</div>
+        <div class="right" @click="orderDetail()">{{chenked(item.status)}}</div>
       </div>
     </van-list>
     <!-- </van-pull-refresh> -->
@@ -18,10 +18,7 @@
 
 <script>
   import axios from "axios";
-  import {
-    apiGetUserInfo,
-    apiSellList
-  } from '@/api/home';
+  import { apiGetUserInfo, apiOrderList } from '@/api/home';
 
   export default {
     name: 'HomeView',
@@ -29,27 +26,8 @@
     props: {},
     data() {
       return {
-        orderList: [{
-          name: '梦戴维智慧润眼台灯',
-          sub: '客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595',
-          number: 'P2302000001',
-          status: '等待客服联络'
-        }, {
-          name: '梦戴维智慧润眼台灯',
-          sub: '客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595',
-          number: 'P2302000001',
-          status: '结束'
-        }, {
-          name: '梦戴维智慧润眼台灯',
-          sub: '客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595',
-          number: 'P2302000001',
-          status: '等待客服联络'
-        }, {
-          name: '梦戴维智慧润眼台灯',
-          sub: '客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595',
-          number: 'P2302000001',
-          status: '结束'
-        }],
+        orderList: [],
+        status:'',
         loading: true, //加载状态
         finished: false, //是否加载完成
         // refreshing: false, //刷新
@@ -69,7 +47,7 @@
         //   this.orderList = [];
         //   this.refreshing = false;
         // }
-        const res = await apiSellList({
+        const res = await apiOrderList({
           userId: window.localStorage.getItem("userId"),
           token: window.localStorage.getItem('token')
         })
@@ -89,6 +67,27 @@
         this.finished = this.orderList.length >= res.list.length
       },
 
+      // 工单状态
+      chenked(value) {
+        switch (value) {
+          case '0':
+            return '等待客服联络'
+          case '1':
+            return '沟通中'
+          case '2':
+            return '结束'
+          case '3':
+            return '寄回售后'
+          case '4':
+            return '等待售后收获'
+          case '5':
+            return '正在处理'
+          case '6':
+            return '查看费用'
+          case '7':
+            return '查看运单号'
+        }
+      },
       // 下拉刷新
       // onRefresh() {
       //   // 清空列表数据
