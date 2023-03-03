@@ -1,25 +1,28 @@
 <template>
   <div class="main">
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <van-button round block icon="plus" type="info" @click="jump('./prolist')">新建工单</van-button>
-      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getOrderList">
-        <div class="list" v-for="(item,index) in orderList" :key="index">
-          <div class="left">
-            <div class="name" @click="orderDetail()">{{item.name}}</div>
-            <div class="sub">{{item.sub}}</div>
-            <div class="number">{{item.number}}</div>
-          </div>
-          <div class="right" @click="orderDetail()">{{item.status}}</div>
+    <!-- <van-pull-refresh v-model="refreshing" @refresh="onRefresh"> -->
+    <van-button round block icon="plus" type="info" @click="jump('./prolist')">新建工单</van-button>
+    <van-list v-model="loading" :finished="finished" finished-text="没有更多了">
+      <div class="list" v-for="(item,index) in orderList" :key="index">
+        <div class="left">
+          <div class="name" @click="orderDetail()">{{item.name}}</div>
+          <div class="sub">{{item.sub}}</div>
+          <div class="number">{{item.number}}</div>
         </div>
-      </van-list>
-    </van-pull-refresh>
+        <div class="right" @click="orderDetail()">{{item.status}}</div>
+      </div>
+    </van-list>
+    <!-- </van-pull-refresh> -->
   </div>
 </template>
 
 <script>
   import axios from "axios";
-  import { apiGetUserInfo } from '@/api/home';
-  
+  import {
+    apiGetUserInfo,
+    apiSellList
+  } from '@/api/home';
+
   export default {
     name: 'HomeView',
     components: {},
@@ -47,9 +50,9 @@
           number: 'P2302000001',
           status: '结束'
         }],
-        loading: false, //加载状态
+        loading: true, //加载状态
         finished: false, //是否加载完成
-        refreshing: false, //刷新
+        // refreshing: false, //刷新
         openid: '',
       }
     },
@@ -66,33 +69,42 @@
         //   this.orderList = [];
         //   this.refreshing = false;
         // }
-        // const res = await apiOrderList()
-        // console.log(res, "res")
-        // let orderList = res.LIST || []
+        const res = await apiSellList({
+          userId: window.localStorage.getItem("userId"),
+          token: window.localStorage.getItem('token')
+        })
+        console.log(res, "res")
+        let orderList = res.list || []
+        // 如果返回的数组是空或数组长度是0
+        if (orderList == null || orderList.length === 0) {
+          this.loading = false; // 关闭加载状态
+          this.finished = true; // 加载结束
+          return;
+        }
         this.loading = false;
-        // for (let i = 0; i < orderList.length; i++) {
-        //   let item = orderList[i]
-        //   this.orderList.push(item)
-        // }
-        // this.finished = this.orderList.length >= res.TOTAL_NUM
+        for (let i = 0; i < orderList.length; i++) {
+          let item = orderList[i]
+          this.orderList.push(item)
+        }
+        this.finished = this.orderList.length >= res.list.length
       },
 
-      // 刷新
-      onRefresh() {
-        // 清空列表数据
-        this.finished = false;
-        // 重新加载数据
-        // 将 loading 设置为 true，表示处于加载状态
-        this.loading = true;
-        this.getOrderList();
-      },
+      // 下拉刷新
+      // onRefresh() {
+      //   // 清空列表数据
+      //   this.finished = false;
+      //   // 重新加载数据
+      //   // 将 loading 设置为 true，表示处于加载状态
+      //   this.loading = true;
+      //   this.getOrderList();
+      // },
       wxLogin() {
         // 定时器，为了让用户授权才能使用，如果没授权，则5秒后重新弹框提示用户授权
         // var tokenTimer = setInterval(() => {
         // 判断有没有token
         const token = window.localStorage.getItem('token')
         // const token = '0086F7AEE3CE6A3395481A84F7D61172'
-        console.log("token",token)
+        console.log("token", token)
         if (!token) {
           // 获取地址栏后面的参数code
           let code = this.getParam(window.location.href, 'code')
@@ -102,17 +114,20 @@
             // 接口需要自己定义
             axios.post('https://oppay.orthok.cn/api/wx/gd', {
               code: code
-            },{headers: { 'content-type': 'application/x-www-form-urlencoded' }}).then(res => {
+            }, {
+              headers: {
+                'content-type': 'application/x-www-form-urlencoded'
+              }
+            }).then(res => {
               console.log(res, "resssssssss")
-              const data=res.data
+              const data = res.data
               if (data.status == 0) {
                 // clearInterval(tokenTimer) // 清除定时器
                 // this.$toast('授权成功') // 提示用户授权成功
-                  console.log(data, "data")
+                console.log(data, "data")
                 this.openid = data.openid
                 this.$store.commit('setOpenId', data.openid)
                 this.getUserInfo()
-                this.getOrderList() // 获取用户信息接口，自己定义的
                 //未注册跳转到注册页，携带openId
               } else {
                 this.$toast({
@@ -135,7 +150,7 @@
            * 并清除定时器
            */
           // clearInterval(tokenTimer)
-          console.log("已经有token了",token)
+          console.log("已经有token了", token)
           this.getOrderList() // 获取用户信息接口，自己定义的
         }
         // }, 8000)
@@ -154,8 +169,9 @@
 
       // 根据openid获取用户信息
       async getUserInfo() {
-        let res = await apiGetUserInfo({ openid: this.openid })
-        // let res = await apiGetUserInfo({ openid: 'oDK9buLD1yUsgWB1ffSWwVU0GKQ4' })
+        let res = await apiGetUserInfo({
+          openid: this.openid
+        })
         console.log(res, "用户信息")
         if (res.status == 0) {
           this.$store.commit('setUserId', res.userId)

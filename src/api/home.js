@@ -2,13 +2,13 @@ import request from '@/utils/request'
 
 
 // 工单列表
-// export function apiOrderList(data) {
-//   return request({
-//     url: '/products.shtml',
-//     method: 'POST',
-//     data,
-//   })
-// }
+export function apiSellList(data) {
+  return request({
+    url: '/sell_list.shtml',
+    method: 'POST',
+    data,
+  })
+}
 
 
 // 获取用户信息  

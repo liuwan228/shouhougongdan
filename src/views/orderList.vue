@@ -21,6 +21,7 @@
   import {
     apiOrderList
   } from '@/api/home';
+  import { mapState } from 'vuex'
   export default {
     name: '',
     components: {},
@@ -30,7 +31,7 @@
         orderProList: [],
       }
     },
-    computed: {},
+    computed: {...mapState(['productInfo'])},
     watch: {},
     created() { },
     mounted() {
@@ -40,7 +41,8 @@
       async getOrderProList() {
         let params = {
           userId: window.localStorage.getItem("userId"),
-          token: window.localStorage.getItem('token')
+          token: window.localStorage.getItem('token'),
+          produitId:this.productInfo.produitId,
         }
         console.log(params, "params")
         const res = await apiOrderList(params)
