@@ -2,7 +2,7 @@
   <div class="main">
     <div class="font30">请选择已经登记的产品或登记新产品</div>
     <van-list @load="getOrderProList">
-      <div class="list" v-for="(item,index) in orderProList" :key="index" @click="orderQues()">
+      <div class="list" v-for="(item,index) in orderProList" :key="index" @click="orderQues(item.sellId)">
         <div class="left">
           <div class="name">{{item.proName}}</div>
           <div class="sub">{{item.addtime}}</div>
@@ -27,23 +27,19 @@
     props: {},
     data() {
       return {
-        typeId: '',
         orderProList: [],
       }
     },
     computed: {},
     watch: {},
-    created() {
-      this.typeId = this.$route.query.id
-      console.log(this.typeId, "typeId")
-    },
+    created() { },
     mounted() {
       // this.getOrderProList()
     },
     methods: {
       async getOrderProList() {
         let params = {
-          userId: window.localStorage.getItem("userid"),
+          userId: window.localStorage.getItem("userId"),
           token: window.localStorage.getItem('token')
         }
         console.log(params, "params")
@@ -54,13 +50,12 @@
       },
 
       // 提交问题
-      orderQues() {
-        this.$router.push('./subques')
+      orderQues(id) {
+        this.$router.push({path:'./subques',query:{id:id}})
       },
-
       // 新登记产品
       orderNewPro() {
-        this.$router.push({path:'./ordernewpro',query:{id:this.typeId}})
+        this.$router.push('./ordernewpro')
       }
     }
   }

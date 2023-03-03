@@ -1,18 +1,17 @@
 <template>
   <div class="main">
-    <div class="font30">请输入 <span class="name">梦戴维智慧润眼台灯</span> 的产品问题</div>
+    <div class="font30">请输入 <span class="name">{{productInfo.proName}}</span> 的产品问题</div>
     <div>
       <van-form @submit="onSubmit">
         <div class="mgt24 text">
-          <van-field v-model="value" rows="5" border autosize label="" type="textarea" placeholder="请输入您遇到的产品问题" />
+          <van-field v-model="question" rows="5" border autosize label="" type="textarea" placeholder="请输入您遇到的产品问题" />
         </div>
         <div class="font30 mgt24">请上传或拍摄有助于理解问题的照片</div>
         <div class="mgt24 uploadImg">
           <van-field name="uploader" label="">
             <template #input>
-              <van-uploader :after-read="afterRead" max-count="4" multiple @delete="deleteImg"  :before-read="beforeRead"
-                preview-size="80px" v-model="fileList" upload-text="点击上传">
-              </van-uploader>
+              <van-uploader :before-read="beforeRead" :after-read="afterRead" :max-count="6" @delete="deleteImg"
+                preview-size="80px" v-model="fileList" upload-text="点击上传"> </van-uploader>
             </template>
           </van-field>
         </div>
@@ -25,7 +24,13 @@
 </template>
 
 <script>
-import axios from 'axios';
+  import axios from 'axios';
+  import {
+    mapState
+  } from 'vuex'
+  import {
+    apiOrderQues
+  } from '@/api/home';
   export default {
     name: '',
     mixins: [],
@@ -33,25 +38,49 @@ import axios from 'axios';
     props: {},
     data() {
       return {
-        value: '',
+        question: '',
         fileList: [],
+        sellId: '', //记录id
+        uploadImage: [], //上传文件列表
+        photoList:[],//返回后文件列表
+        orderId:'',//问题id
       }
     },
-    computed: {},
+    computed: {
+      ...mapState(['productInfo'])
+    },
     watch: {},
-    created() {},
+    created() {
+      this.sellId = this.$route.query.id
+      console.log(this.sellId, "sellId")
+    },
     mounted() {},
     methods: {
-      onSubmit(values) {
-        console.log('submit', values);
+      async onSubmit() {
+        let params = {
+          userId: window.localStorage.getItem("userId"),
+          token: window.localStorage.getItem('token'),
+          produitId: this.productInfo.produitId,
+          sellId: this.sellId,
+          question: this.question,
+          photo: this.photoList,
+        };
+        console.log(params, "params")
+        const res = await apiOrderQues(params)
+        if (res.status == 0) {
+          this.orderId = res.orderId
+        } else {
+          this.$toast(res.errMsg);
+        }
+
       },
 
       beforeRead(file) {
-         if (!/(jpg|jpeg|png|JPG|PNG)/i.test(file.type)) {
-          this.$toast("请上传正确格式的图片");
-          return false;
+        if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/jpg') {
+          this.$toast.fail('请选择正确图片格式上传')
+          return false
         }
-        return true;
+        return file
       },
       afterRead(file) {
         // 此时可以自行将文件上传至服务器
@@ -60,28 +89,18 @@ import axios from 'axios';
         const formdata = new FormData();
         //"file"表示给后台传的属性名字 
         formdata.append('file', file.file);
-        if(file instanceof Array && file.length){
-          file.forEach(item=>{
-            item.status = 'uploading';
-            item.message = '上传中...';
-            formdata.append("file",item.file)
-          })
-        }else{
-          file.status = 'uploading';
-          file.message = '上传中...';
-          formdata.append("file",file.file)
-        }
+        file.status = 'uploading';
+        file.message = '上传中...';
+        this.uploadImage.push(file.file)
+        console.log(this.uploadImage, "单张")
         //向后台发送相应请求
-        axios.post('https://img2.orthok.cn/api/service/index', formdata, {
-          headers: {
-            'content-type': 'application/x-www-form-urlencoded'
-          }
-        }).then(res => {
+        axios.post('https://img2.orthok.cn/api/service/index', formdata, { headers: { 'content-type': 'application/x-www-form-urlencoded' } }).then(res => {
           const data = res.data
+          console.log(data, "data")
           if (data.status == 0) {
-            this.markPhoto = data.filename
+            this.photoList.push(data.filename)
             file.status = 'done';
-            file.message = '成功';
+            file.message = '上传成功';
           } else {
             this.$toast('上传失败')
           }

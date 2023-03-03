@@ -2,7 +2,7 @@
   <div class="main">
     <div class="font30">请选择产品类型</div>
     <div class="prolist">
-      <div class="list" v-for="(item,index) in proList" :key="index" @click="jump(item.produitId)">
+      <div class="list" v-for="(item,index) in proList" :key="index" @click="jump(item)">
         <div class="left">
           <img class="imgBox" :src="item.photo" alt="">
         </div>
@@ -14,7 +14,9 @@
 </template>
 
 <script>
-  import { apiProList } from '@/api/home';
+  import {
+    apiProList
+  } from '@/api/home';
   export default {
     name: '',
     components: {},
@@ -37,14 +39,21 @@
           this.proList = res.list || []
         }
       },
-      jump(id) {
-        this.$router.push({path:'./orderlist',query:{id:id}})
+      jump(item) {
+        this.$store.commit('setProductInfo', item)
+        console.log(item, "item")
+        this.$router.push('./orderlist')
       }
     }
   }
 </script>
 
 <style scoped lang="scss">
+  .list {
+    width: 100%;
+    height: 220px;
+  }
+
   .sub {
     font-size: 20px;
     margin-top: 12px;
@@ -57,6 +66,7 @@
     display: flex;
     align-items: center;
     margin-right: 24px;
+     overflow: hidden;
 
     .imgBox {
       width: 100%;

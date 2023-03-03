@@ -19,6 +19,7 @@
 <script>
   import axios from "axios";
   import { apiGetUserInfo } from '@/api/home';
+  
   export default {
     name: 'HomeView',
     components: {},
@@ -46,10 +47,6 @@
           number: 'P2302000001',
           status: '结束'
         }],
-        params: {
-          name: "nihao",
-          id: '111'
-        },
         loading: false, //加载状态
         finished: false, //是否加载完成
         refreshing: false, //刷新
@@ -61,7 +58,6 @@
     created() {},
     mounted() {
       this.wxLogin()
-      // this.getUserInfo()
     },
     methods: {
       //获取工单列表数据
@@ -104,22 +100,20 @@
           // 如果有code，则需要用code换取token
           if (code) {
             // 接口需要自己定义
-            axios.post('http://oppay.orthok.cn/api/wx/gd', {
+            axios.post('https://oppay.orthok.cn/api/wx/gd', {
               code: code
             },{headers: { 'content-type': 'application/x-www-form-urlencoded' }}).then(res => {
               console.log(res, "resssssssss")
               const data=res.data
               if (data.status == 0) {
                 // clearInterval(tokenTimer) // 清除定时器
-                this.$toast('授权成功') // 提示用户授权成功
+                // this.$toast('授权成功') // 提示用户授权成功
                   console.log(data, "data")
-                
                 this.openid = data.openid
                 this.$store.commit('setOpenId', data.openid)
                 this.getUserInfo()
                 this.getOrderList() // 获取用户信息接口，自己定义的
                 //未注册跳转到注册页，携带openId
-
               } else {
                 this.$toast({
                   message: "授权失败，请稍后重试...",
@@ -172,11 +166,6 @@
           this.$router.push('./login')
         }
       },
-
-      // addOrder() {
-      //   this.$router.push('./prolist')
-      // },
-
       // 跳转
       jump(url) {
         this.$router.push(url)

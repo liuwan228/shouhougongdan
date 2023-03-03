@@ -46,3 +46,12 @@ export function apiOrderPro(data) {
     data,
   })
 }
+
+// 提交问题
+export function apiOrderQues(data) {
+  return request({
+    url: '/order_add.shtml',
+    method: 'POST',
+    data,
+  })
+}

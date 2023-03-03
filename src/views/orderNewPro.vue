@@ -1,7 +1,7 @@
 <template>
   <div class="main">
-    <div class="font30">请输入 <span class="name">梦戴维智慧润眼台灯</span> 的产品购买信息</div>
-    <van-form @submit="onSubmit">
+    <div class="font30">请输入 <span class="name">{{productInfo.proName}}</span> 的产品购买信息</div>
+    <van-form>
       <div class="mgt24">
         <van-field v-model="value" colon border label="" placeholder="请输入产品序列号" />
       </div>
@@ -38,9 +38,8 @@
 
 <script>
   import axios from "axios"
-  import {
-    apiOrderPro
-  } from '@/api/home';
+  import { apiOrderPro } from '@/api/home';
+  import { mapState } from 'vuex'
   export default {
     name: '',
     mixins: [],
@@ -54,16 +53,16 @@
         billPhoto: '',
         markPhotoList: [], //铭牌
         billList: [], //发票
-        produitId: '', //产品id
+        productObj: {}, //产品信息
       }
     },
-    computed: {},
+    computed: {...mapState(['productInfo'])},
     watch: {
 
     },
     created() {
-      this.produitId = this.$route.query.id
-      console.log(this.produitId, "produitId")
+      // this.productObj = this.$route.query.item
+      console.log(this.productInfo, "productInfo")
     },
     mounted() {},
     methods: {
@@ -117,10 +116,10 @@
       async onSubmit() {
         console.log(this.markPhoto, "this.markPhoto222")
         let params = {
-          userId: this.$store.state.userId,
+          userId: window.localStorage.getItem("userId"),
           token: window.localStorage.getItem('token'),
           // token:'0086F7AEE3CE6A3395481A84F7D61172',
-          produitId: this.produitId,
+          produitId: this.productInfo.produitId,
           SN: this.value,
           markPhoto: this.markPhoto,
           billPhoto: this.billPhoto,
@@ -129,7 +128,7 @@
         const res = await apiOrderPro(params)
         if (res.status == 0) {
           this.sellId = res.sellId
-          this.$router.push('./subques')
+          this.$router.push({path:'./subques',query:{id:this.sellId}})
         } else {
           this.$toast(res.errMsg);
         }
