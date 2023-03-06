@@ -5,11 +5,11 @@
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了">
       <div class="list" v-for="(item,index) in orderList" :key="index">
         <div class="left">
-          <div class="name" @click="orderDetail()">{{item.proName}}</div>
+          <div class="name" @click="orderDetail(item.orderId)">{{item.proName}}</div>
           <div class="sub">客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595</div>
           <div class="number">{{item.bianhao}}</div>
         </div>
-        <div class="right" @click="orderDetail()">{{chenked(item.status)}}</div>
+        <div class="right" @click="orderDetail(item.orderId)">{{chenked(item.status)}}</div>
       </div>
     </van-list>
     <!-- </van-pull-refresh> -->
@@ -186,9 +186,9 @@
         this.$router.push(url)
       },
       // 跳转到工单详情页
-      orderDetail() {
-        this.$router.push('./detail')
-
+      orderDetail(id) {
+        console.log(id,"id")
+        this.$router.push({path:'./detail',query:{id:id}})
       }
     }
   }

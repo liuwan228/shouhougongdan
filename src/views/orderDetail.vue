@@ -7,8 +7,8 @@
       <div class="pro_sub">质保期：待确认</div>
     </div>
     <div class="orde_status mgt24">
-      <van-steps direction="vertical" :active="progessList.length-1" active-color="#38f"  icon-size="28px">
-        <van-step v-for="(item,index) in progessList" :key="index" >
+      <van-steps direction="vertical" :active="progessList.length-1" active-color="#38f" icon-size="28px">
+        <van-step v-for="(item,index) in progessList" :key="index">
           <div class="title">{{item.time}}</div>
           <div class="title">{{item.sub}}</div>
           <!-- 完成提交，等待客服联络 -->
@@ -23,12 +23,12 @@
 
           <!-- 客服已联络，请将产品寄回 -->
           <div class="stage2" v-if="item.status=='1' ">
-            <div class="sub">请注意： 
+            <div class="sub">请注意：
               <ul>
                 <li>· 请将产品问题简述和手机号码写在一张小卡片上，随产品一起寄回。</li>
                 <li>· 请将产品妥善打包，尽可能使用原包装，并附所有配件。寄到如下地址。</li>
               </ul>
-              </div>
+            </div>
             <div class="sub">收件地址：安徽省合肥市高新区望江西路4899号欧普康视</div>
             <div class="sub">收件人：李芳玲</div>
             <div class="sub">收件电话：0551-65319181 </div>
@@ -64,13 +64,13 @@
             <div class="sub">回寄快递：申通 </div>
             <div class="sub">回寄单号：STxxxxxxxxxxxxxxxxxxx </div>
             <div class="mgt24">
-            <van-button round block type="info">确认收件</van-button>
+              <van-button round block type="info">确认收件</van-button>
             </div>
           </div>
           <!-- 产品已收到，售后流程结束 -->
 
           <!-- 产品问题在保修外，需要您付费维修 -->
-          
+
           <!-- 维修费用已支付，售后正在维修中 -->
         </van-step>
       </van-steps>
@@ -79,12 +79,16 @@
 </template>
 
 <script>
+  import {
+    apiOrderDetail
+  } from '@/api/home';
   export default {
     name: '',
     components: {},
     props: {},
     data() {
       return {
+        orderId: '', //订单Id
         query: {
           express_name: '',
           express_num: '',
@@ -148,9 +152,23 @@
     },
     computed: {},
     watch: {},
-    created() {},
-    mounted() {},
+    created() {
+      this.orderId = this.$route.query.id
+    },
+    mounted() {
+      this.getDetailInfo()
+    },
     methods: {
+      async getDetailInfo() {
+        let params = {
+          userId: window.localStorage.getItem("userId"),
+          token: window.localStorage.getItem('token'),
+          orderId: this.orderId,
+        };
+        const res = await apiOrderDetail(params)
+        console.log(res, "res")
+      },
+
       onSubmit(values) {
         console.log('submit', values);
       },
@@ -191,13 +209,15 @@
 
     ::v-deep .van-cell {
       border: 1px solid #ebedf0;
-    margin-top: 24px;
+      margin-top: 24px;
     }
-   ::v-deep .van-step__circle{
+
+    ::v-deep .van-step__circle {
       width: 24px;
       height: 24px;
     }
-   ::v-deep .van-step__circle-container{
+
+    ::v-deep .van-step__circle-container {
       font-size: 36px;
     }
   }
