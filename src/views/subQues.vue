@@ -2,7 +2,7 @@
   <div class="main">
     <div class="font30">请输入 <span class="name">{{productInfo.proName}}</span> 的产品问题</div>
     <div>
-      <van-form @submit="onSubmit">
+      <van-form >
         <div class="mgt24 text">
           <van-field v-model="question" rows="5" border autosize label="" type="textarea" placeholder="请输入您遇到的产品问题" />
         </div>
@@ -16,7 +16,7 @@
           </van-field>
         </div>
         <div class="mgt48">
-          <van-button round block type="info" to="/home" native-type="submit">提交</van-button>
+          <van-button round block type="info" native-type="submit" @click="onSubmit">提交</van-button>
         </div>
       </van-form>
     </div>
@@ -68,7 +68,8 @@
         console.log(params, "params")
         const res = await apiOrderQues(params)
         if (res.status == 0) {
-          this.orderId = res.orderId
+          this.orderId = res.orderId;
+          this.$router.push('./home')
         } else {
           this.$toast(res.errMsg);
         }

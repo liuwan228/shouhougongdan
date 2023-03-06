@@ -6,10 +6,10 @@
       <div class="list" v-for="(item,index) in orderList" :key="index">
         <div class="left">
           <div class="name" @click="orderDetail(item.orderId)">{{item.proName}}</div>
-          <div class="sub">客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595</div>
+          <div class="sub">{{chenkedSub(item.gdStatus)}}</div>
           <div class="number">{{item.bianhao}}</div>
         </div>
-        <div class="right" @click="orderDetail(item.orderId)">{{chenked(item.status)}}</div>
+        <div class="right" @click="orderDetail(item.orderId)">{{chenked(item.gdStatus)}}</div>
       </div>
     </van-list>
     <!-- </van-pull-refresh> -->
@@ -18,7 +18,10 @@
 
 <script>
   import axios from "axios";
-  import { apiGetUserInfo, apiOrderList } from '@/api/home';
+  import {
+    apiGetUserInfo,
+    apiOrderList
+  } from '@/api/home';
 
   export default {
     name: 'HomeView',
@@ -27,7 +30,7 @@
     data() {
       return {
         orderList: [],
-        status:'',
+        status: '',
         loading: true, //加载状态
         finished: false, //是否加载完成
         // refreshing: false, //刷新
@@ -67,27 +70,7 @@
         this.finished = this.orderList.length >= res.list.length
       },
 
-      // 工单状态
-      chenked(value) {
-        switch (value) {
-          case '0':
-            return '等待客服联络'
-          case '1':
-            return '沟通中'
-          case '2':
-            return '结束'
-          case '3':
-            return '寄回售后'
-          case '4':
-            return '等待售后收获'
-          case '5':
-            return '正在处理'
-          case '6':
-            return '查看费用'
-          case '7':
-            return '查看运单号'
-        }
-      },
+
       // 下拉刷新
       // onRefresh() {
       //   // 清空列表数据
@@ -181,14 +164,64 @@
           this.$router.push('./login')
         }
       },
+            // 工单状态
+      chenked(value) {
+        switch (value) {
+          case '0':
+            return '等待客服联络'
+          case '1':
+            return '售后寄回'
+          case '2':
+            return '等待售后收获'
+          case '3':
+            return '正在处理'
+          case '4':
+            return '查看费用'
+          case '5':
+            return '正在处理'
+          case '6':
+            return '查看运单号'
+          case '7':
+            return '结束'
+          case '9':
+            return '结束'
+        }
+      },
+      chenkedSub(value) {
+        switch (value) {
+          case '0':
+            return '客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595'
+          case '1':
+            return '请将您的电话号码和故障说明写在一张小卡片上，按地址寄回售后。'
+          case '2':
+            return '请耐心等待售后收货'
+          case '3':
+            return '售后已收货，正在进行处理。'
+          case '4':
+            return '此次维修产生了费用，请对费用进行确认和支付。'
+          case '5':
+            return '售后已收货，正在进行处理。'
+          case '6':
+            return '您的产品已寄回，您可以查看运单号，以便查询物流进度。'
+          case '7':
+            return '售后流程已结束。'
+          case '9':
+            return '售后流程已结束。'
+        }
+      },
       // 跳转
       jump(url) {
         this.$router.push(url)
       },
       // 跳转到工单详情页
       orderDetail(id) {
-        console.log(id,"id")
-        this.$router.push({path:'./detail',query:{id:id}})
+        console.log(id, "id")
+        this.$router.push({
+          path: './detail',
+          query: {
+            id: id
+          }
+        })
       }
     }
   }

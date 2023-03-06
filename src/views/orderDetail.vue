@@ -10,7 +10,7 @@
       <van-steps direction="vertical" :active="progessList.length-1" active-color="#38f" icon-size="28px">
         <van-step v-for="(item,index) in progessList" :key="index">
           <div class="title">{{item.time}}</div>
-          <div class="title">{{item.sub}}</div>
+          <div class="title">{{chenkedStatus(item.sub)}}</div>
           <!-- 完成提交，等待客服联络 -->
           <div class="stage1" v-if="item.status=='0' ">
             <span class="sub">问题描述： {{item.info}} </span>
@@ -20,7 +20,6 @@
             <span class="sub">客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595</span>
           </div>
           <!-- 客服已联络解决问题，售后流程结束 -->
-
           <!-- 客服已联络，请将产品寄回 -->
           <div class="stage2" v-if="item.status=='1' ">
             <div class="sub">请注意：
@@ -171,6 +170,30 @@
 
       onSubmit(values) {
         console.log('submit', values);
+      },
+
+      // 工单状态
+      chenkedStatus(value) {
+        switch (value) {
+          case '0':
+            return '完成提交，等待客服联络'
+          case '1':
+            return '客服已联络，请将产品寄回'
+          case '2':
+            return '产品已寄回，请等待售后人员收货检测'
+          case '3':
+            return '售后已收到产品，正在进行检测'
+          case '4':
+            return '产品问题在保修外，需要您付费维修'
+          case '5':
+            return '维修费用已支付，售后正在维修中'
+          case '6':
+            return '售后已完成处理并寄回，请您查收快递'
+          case '7':
+            return '产品已收到，售后流程结束'
+          case '9':
+            return '完成提交，等待客服联络'
+        }
       },
     }
   }
