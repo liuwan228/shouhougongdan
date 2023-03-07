@@ -10,14 +10,7 @@ export function apiOrderList(data) {
   })
 }
 
-// 详情页
-export function apiOrderDetail(data) {
-  return request({
-    url: '/order_detail.shtml',
-    method: 'POST',
-    data,
-  })
-}
+
 
 // 获取用户信息  
 export function apiGetUserInfo(data) {

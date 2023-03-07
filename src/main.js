@@ -17,7 +17,10 @@ import { Divider } from 'vant';
 import { Step, Steps } from 'vant';
 import { Image as VanImage } from 'vant';
 import { AddressEdit } from 'vant';
-
+import { Area } from 'vant';
+import { Popup } from 'vant';
+Vue.use(Popup);
+Vue.use(Area);
 Vue.use(AddressEdit);
 Vue.use(VanImage);
 Vue.use(Step);

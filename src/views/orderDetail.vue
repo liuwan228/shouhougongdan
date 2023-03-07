@@ -1,74 +1,116 @@
 <template>
   <div class="main">
     <div class="pro_detail">
-      <div class="name">梦戴维智慧润眼台灯</div>
-      <div class="pro_sub">序列号：WML01-2301xxxxx</div>
-      <div class="pro_sub">工单号：P2301xxxxxx</div>
-      <div class="pro_sub">质保期：待确认</div>
+      <div class="name">{{progessInfo.proName}}</div>
+      <div class="pro_sub">序列号：{{progessInfo.SN}}</div>
+      <div class="pro_sub">工单号：{{progessInfo.bianhao}}</div>
+      <div class="pro_sub">质保期：{{progessInfo.warrantyPeriod}}</div>
     </div>
     <div class="orde_status mgt24">
       <van-steps direction="vertical" :active="progessList.length-1" active-color="#38f" icon-size="28px">
         <van-step v-for="(item,index) in progessList" :key="index">
-          <div class="title">{{item.time}}</div>
-          <div class="title">{{chenkedStatus(item.sub)}}</div>
+          <div class="title">{{item.addtime}}</div>
+          <div class="title">{{chenkedStatus(item.gdStatus)}}</div>
           <!-- 完成提交，等待客服联络 -->
-          <div class="stage1" v-if="item.status=='0' ">
-            <span class="sub">问题描述： {{item.info}} </span>
-            <div class="imgList">
-              <van-image width="60" height="60" src="https://img01.yzcdn.cn/vant/cat.jpeg" />
+          <div class="stage1" v-if="item.gdStatus=='0' ">
+            <div class="sub">问题描述： {{item.question}} </div>
+            <div class="imgList" v-show="item.photo !==''">
+              <van-image width="60" height="60" :src="item.photo" />
             </div>
-            <span class="sub">客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595</span>
+            <div class="sub">客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595</div>
           </div>
           <!-- 客服已联络解决问题，售后流程结束 -->
+          <div class="stage1" v-if="item.gdStatus=='9' ">
+            <span class="sub">{{item.kfCheckNotes}}</span>
+          </div>
           <!-- 客服已联络，请将产品寄回 -->
-          <div class="stage2" v-if="item.status=='1' ">
+          <div class="stage2" v-if="item.gdStatus=='1' ">
             <div class="sub">请注意：
               <ul>
                 <li>· 请将产品问题简述和手机号码写在一张小卡片上，随产品一起寄回。</li>
                 <li>· 请将产品妥善打包，尽可能使用原包装，并附所有配件。寄到如下地址。</li>
               </ul>
             </div>
+            <br>
             <div class="sub">收件地址：安徽省合肥市高新区望江西路4899号欧普康视</div>
             <div class="sub">收件人：李芳玲</div>
             <div class="sub">收件电话：0551-65319181 </div>
+            <!-- <div><span class="changeAddress" >复制以上地址</span></div> -->
+            <br>
             <div class="sub">寄出后，请填写如下信息，以便我们跟踪您寄出的产品和给您寄回产品。</div>
-            <div class="mgt24" v-if="progessList.length<12">
-              <van-form @submit="onSubmit(query)">
-                <van-field v-model="query.express_name" label="" placeholder="快递公司名称" />
-                <van-field v-model="query.express_num" label="" placeholder="快递单号" />
-                <van-field v-model="query.person_name" label="" placeholder="寄件人姓名" />
-                <van-field v-model="query.person_tel" label="" placeholder="寄件人手机" />
-                <van-field v-model="query.person_address" label="" placeholder="寄件人地址" />
+            <div class="mgt24 addressBox" v-if="progessList.length<3">
+              <van-form>
+                <van-field v-model="perInfo.shr" label="姓名" :rules="[{ required: true, message: '请填写寄件人姓名' }]"
+                  placeholder="寄件人姓名" />
+                <van-field v-model="perInfo.shdh" label="手机号" :rules="userTel" placeholder="寄件人手机" />
+                <van-field v-model="perInfo.jhKuaidicom" label="快递公司" :rules="[{ required: true, message: '请填写快递公司' }]"
+                  placeholder="寄回快递公司名称" />
+                <van-field v-model="perInfo.jhKuaididanno" label="快递单号"
+                  :rules="[{ required: true, message: '请填写快递单号' }]" placeholder="寄回快递单号" />
+                <van-field @click="showSsq=true" label="地区" :rules="[{ required: true, message: '请选择地址' }]"
+                  v-model="ssqInfo" right-icon="arrow" placeholder="选择省/市/区" />
+                <van-popup v-model="showSsq" position="bottom" :style="{ height: '30%',width:'100%' }">
+                  <van-area title="地址" value="110101" :area-list="areaList" @cancel="showSsq=false"
+                    @confirm="confirmAddress" :columns-placeholder="['请选择', '请选择', '请选择']" />
+                </van-popup>
+                <van-field v-model="perInfo.shdz" :rules="[{ required: true, message: '请填写详细地址' }]" label="详细地址"
+                  placeholder="街道门牌、楼层房间号等信息" />
                 <div class="mgt24">
-                  <van-button round block type="info" native-type="submit">提交</van-button>
+                  <van-button round block type="info" native-type="submit" @click="onSubmit">提交</van-button>
                 </div>
               </van-form>
             </div>
 
           </div>
           <!-- 产品已寄回，请等待售后人员收货检测 -->
-          <div class="stage3" v-if="item.status=='2' ">
-            <div class="sub">寄件快递：韵达</div>
-            <div class="sub">寄件单号：YD241546547465</div>
-            <div class="sub">寄件人姓名：李芳玲</div>
-            <div class="sub">寄件地址：安徽省合肥市高新区望江西路4899号欧普康视</div>
-            <div class="sub">电话：0551-65319181 </div>
+          <div class="stage3" v-if="item.gdStatus=='2' ">
+            <div class="sub">寄件快递：{{item.jhKuaidicom}}</div>
+            <div class="sub">寄件单号：{{item.jhKuaididanno}}</div>
+            <div class="sub">回寄件人姓名：{{item.shr}}</div>
+            <div class="sub">回寄收件人手机号：{{item.shdh}}</div>
+            <div class="sub">回寄收件人地址：{{item.shprovince+item.shcity+item.sharea+item.shdz}}</div>
+            <div class="sub mgt24">回寄信息错误？点击 <span class="changeAddress" @click="ChangeAddress(item)">这儿修改</span></div>
+            <div class="mgt24 addressBox" v-show="showAddress">
+              <van-form>
+                <van-field v-model="perInfo.shr" label="姓名" :rules="[{ required: true, message: '请填写寄件人姓名' }]"
+                  placeholder="寄件人姓名" />
+                <van-field v-model="perInfo.shdh" label="电话" :rules="userTel" placeholder="寄件人手机" />
+                <van-field v-model="item.jhKuaidicom" label="快递公司" readonly
+                  :rules="[{ required: true, message: '请填写快递公司' }]" placeholder="寄回快递公司名称" />
+                <van-field v-model="item.jhKuaididanno" readonly label="快递单号"
+                  :rules="[{ required: true, message: '请填写快递单号' }]" placeholder="寄回快递单号" />
+                <van-field @click="showSsq=true" label="地区" :rules="[{ required: true, message: '请选择地址' }]"
+                  v-model="ssqInfo" right-icon="arrow" placeholder="选择省/市/区" />
+                <van-popup v-model="showSsq" position="bottom" :style="{ height: '30%',width:'100%' }">
+                  <van-area title="地址" value="110101" :area-list="areaList" @cancel="showSsq=false"
+                    @confirm="confirmAddress" :columns-placeholder="['请选择', '请选择', '请选择']" />
+                </van-popup>
+                <van-field v-model="perInfo.shdz" :rules="[{ required: true, message: '请填写详细地址' }]" label="详细地址"
+                  placeholder="街道门牌、楼层房间号等信息" />
+                <div class="mgt24">
+                  <van-button round block type="info" native-type="submit" @click="onSubmitChange">提交</van-button>
+                </div>
+              </van-form>
+            </div>
           </div>
           <!-- 售后已收到产品，正在进行检测 -->
-          <div class="stage4" v-if="item.status=='3' ">
+          <div class="stage4" v-if="item.gdStatus=='3' ">
             <span class="sub">工程师有可能与您联系，请保持电话畅通。</span>
           </div>
+
+          <!-- 产品问题在保修外，需要您付费维修 -->
+          <!-- <div class="stage5" v-if="item.gdStatus=='4' ">
+
+          </div> -->
           <!-- 售后已完成处理并寄回，请您查收快递 -->
-          <div class="stage5" v-if="item.status=='4' ">
-            <div class="sub">回寄快递：申通 </div>
-            <div class="sub">回寄单号：STxxxxxxxxxxxxxxxxxxx </div>
-            <div class="mgt24">
-              <van-button round block type="info">确认收件</van-button>
+          <div class="stage5" v-if="item.gdStatus=='6' ">
+            <div class="sub">回寄快递：{{item.hjKuaidicom}} </div>
+            <div class="sub">回寄单号：{{item.hjKuaididanno}} </div>
+            <div class="mgt24" v-show="isShowBut">
+              <van-button round block type="info"   @click="getConfirmReceipt">确认收件</van-button>
             </div>
           </div>
           <!-- 产品已收到，售后流程结束 -->
-
-          <!-- 产品问题在保修外，需要您付费维修 -->
 
           <!-- 维修费用已支付，售后正在维修中 -->
         </van-step>
@@ -79,74 +121,39 @@
 
 <script>
   import {
-    apiOrderDetail
-  } from '@/api/home';
+    areaList
+  } from "@vant/area-data";
+  import {
+    apiOrderDetail,
+    apiAddress,
+    apiReceipt,
+    apiChangeReceipt
+  } from '@/api/detail';
   export default {
     name: '',
     components: {},
     props: {},
     data() {
       return {
+        showSsq: false, //省市区选择
+        showAddress: false, //显示修改地址
+        showSSQ: false,
+        areaList,
         orderId: '', //订单Id
-        query: {
-          express_name: '',
-          express_num: '',
-          person_name: '',
-          person_tel: '',
-          person_address: '',
-        }, //寄件人信息
-        progessList: [{
-            time: '2023年2月9日 13:21',
-            status: '0',
-            sub: '完成提交，等待客服联络',
-            info: '功能不好',
-            imgUrl: [{
-              url: require('@/assets/img/pro1.jpg'),
-              id: '1'
-            }, {
-              url: require('@/assets/img/pro1.jpg'),
-              id: '2'
-            }],
-          }, {
-            time: '2023年2月10日 13:21',
-            status: '1',
-            sub: '客服已联络，请将产品寄回',
-            info: '功能不好',
-            imgUrl: [{
-              url: require('@/assets/img/pro1.jpg'),
-              id: '1'
-            }, {
-              url: require('@/assets/img/pro1.jpg'),
-              id: '2'
-            }],
-          }, {
-            time: '2023年2月11日 13:21',
-            status: '2',
-            sub: '产品已寄回，请等待售后人员收货检测',
-            express_name: '韵达',
-            express_num: '400-630-0595',
-            person_name: '李四',
-            person_tel: '15256738723',
-            person_address: '安徽省合肥市高新区望江西路4899号',
-          }, {
-            time: '2023年2月12日 13:21',
-            status: '3',
-            sub: '售后已收到产品，正在进行检测',
-            info: '工程师有可能与您联系，请保持电话畅通。',
-          }, {
-            time: '2023年2月13日 13:21',
-            status: '4',
-            sub: '售后已完成处理并寄回，请您查收快递',
-            back_express_name: '申通',
-            back_express_num: 'ST108435135284',
+        ssqInfo: '', //省市区地址
+        isShowBut:false,//是否展示确认收获按钮
+        userTel: [{
+          required: true,
+          message: '手机号不能为空'
+        }, {
+          validator: value => {
+            return /^1[23456789]\d{9}$/.test(value);
           },
-          //  {
-          //   time: '2023年2月14日 13:21',
-          //   status: '5',
-          //   sub: '产品已收到，售后流程结束',
-          // }
-        ]
-
+          message: "请输入正确格式的手机号"
+        }],
+        perInfo: {}, //寄件人信息
+        progessInfo: { },
+        progessList: [],
       }
     },
     computed: {},
@@ -158,6 +165,25 @@
       this.getDetailInfo()
     },
     methods: {
+      // 提交地址表单
+      async onSubmit() {
+        let obj = {
+          userId: window.localStorage.getItem("userId"),
+          token: window.localStorage.getItem('token'),
+          orderId: this.orderId,
+        }
+        let params = Object.assign(this.perInfo, obj);
+        console.log(params, "params")
+        const res = await apiAddress(params)
+        if (res.status == 0) {
+          this.showSsq = false;
+          this.getDetailInfo()
+        }else{
+          this.$toast(res.errMsg)
+        }
+        console.log(res, "地址")
+      },
+      // 获取详情页信息
       async getDetailInfo() {
         let params = {
           userId: window.localStorage.getItem("userId"),
@@ -165,13 +191,74 @@
           orderId: this.orderId,
         };
         const res = await apiOrderDetail(params)
-        console.log(res, "res")
-      },
+        if(res.realStatus=='6'){
+          this.isShowBut=true
+        }
+        this.progessInfo = res
+        console.log(this.progessInfo, "this.progessInfo")
+        this.progessList = res.list
+        console.log(this.progessList, "this.progessList")
 
-      onSubmit(values) {
-        console.log('submit', values);
       },
-
+      // 选择省市区
+      confirmAddress(val) {
+        this.ssqInfo = val
+          .filter((item) => !!item)
+          .map((item) => item.name)
+          .join('/');
+        this.$set(this.perInfo, 'shprovince', val[0].name)
+        this.$set(this.perInfo, 'shcity', val[1].name)
+        this.$set(this.perInfo, 'sharea', val[2].name)
+        // this.ssqInfo = val[0].name + val[1].name + val[2].name
+        this.$nextTick(() => {
+          this.showSsq = false
+        });
+      },
+      // 修改地址
+      ChangeAddress(value) {
+        this.showAddress = true
+        console.log(value, "value")
+        this.$set(this.perInfo, 'shr', value.shr)
+        this.$set(this.perInfo, 'shdh', value.shdh)
+        this.$set(this.perInfo, 'shdz', value.shdz)
+        this.$set(this.perInfo, 'shprovince', value.shprovince)
+        this.$set(this.perInfo, 'shcity', value.shcity)
+        this.$set(this.perInfo, 'sharea', value.sharea)
+        this.ssqInfo = value.shprovince + value.shcity + value.sharea;
+        console.log(this.perInfo, "2222")
+      },
+      async onSubmitChange() {
+         let obj = {
+          userId: window.localStorage.getItem("userId"),
+          token: window.localStorage.getItem('token'),
+          orderId: this.orderId,
+        }
+        let params = Object.assign(this.perInfo, obj);
+        console.log(params,"修改的信息")
+        const res = await apiChangeReceipt(params)
+        if (res.status == 0) {
+          this.showAddress = false
+          console.log(res, "修改地址")
+          this.getDetailInfo()
+        }
+      },
+      // 确认收货
+      async getConfirmReceipt() {
+        let params = {
+          userId: window.localStorage.getItem("userId"),
+          token: window.localStorage.getItem('token'),
+          orderId: this.orderId,
+        };
+        const res = await apiReceipt(params)
+        if (res.status == 0) {
+          this.$toast('已确认收货')
+          console.log(res, "收获确认")
+          this.isShowBut=false
+          this.getDetailInfo()
+        }else{
+          this.$toast(res.errMsg)
+        }
+      },
       // 工单状态
       chenkedStatus(value) {
         switch (value) {
@@ -192,7 +279,7 @@
           case '7':
             return '产品已收到，售后流程结束'
           case '9':
-            return '完成提交，等待客服联络'
+            return '客服已联络解决问题，售后流程结束'
         }
       },
     }
@@ -226,15 +313,18 @@
     }
 
     .sub {
-      margin-top: 4px;
+      margin-top: 8px;
       color: #666;
     }
 
-    ::v-deep .van-cell {
-      border: 1px solid #ebedf0;
-      margin-top: 24px;
+    ::v-deep .van-field__label {
+      width: 4.2em;
     }
 
+    // ::v-deep .van-cell {
+    //     border: 1px solid #ebedf0;
+    //     margin-top: 24px;
+    //   }
     ::v-deep .van-step__circle {
       width: 24px;
       height: 24px;
@@ -243,5 +333,15 @@
     ::v-deep .van-step__circle-container {
       font-size: 36px;
     }
+  }
+
+  //地址
+  .addressBox .van-address-edit {
+    padding: 0;
+  }
+
+  .changeAddress {
+    color: #1989fa;
+    text-decoration: underline;
   }
 </style>
