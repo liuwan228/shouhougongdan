@@ -18,10 +18,7 @@
 
 <script>
   import axios from "axios";
-  import {
-    apiGetUserInfo,
-    apiOrderList
-  } from '@/api/home';
+  import { apiGetUserInfo, apiOrderList } from '@/api/home';
 
   export default {
     name: 'HomeView',
@@ -52,7 +49,9 @@
         // }
         const res = await apiOrderList({
           userId: window.localStorage.getItem("userId"),
+          // userId:'7',
           token: window.localStorage.getItem('token')
+          // token: 'CEF5832E38898C62715A8EDCF06AA2A6'
         })
         console.log(res, "res")
         let orderList = res.list || []

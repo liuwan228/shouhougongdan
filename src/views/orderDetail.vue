@@ -40,8 +40,8 @@
             <div class="sub">寄出后，请填写如下信息，以便我们跟踪您寄出的产品和给您寄回产品。</div>
             <div class="mgt24 addressBox" v-if="progessList.length<3">
               <van-form>
-                <van-field v-model="perInfo.shr" label="姓名" :rules="[{ required: true, message: '请填写寄件人姓名' }]"
-                  placeholder="寄件人姓名" />
+                <van-field v-model="perInfo.shr" :maxlength="4" label="姓名"
+                  :rules="[{ required: true, message: '请填写寄件人姓名' }]" placeholder="寄件人姓名" />
                 <van-field v-model="perInfo.shdh" label="手机号" :rules="userTel" placeholder="寄件人手机" />
                 <van-field v-model="perInfo.jhKuaidicom" label="快递公司" :rules="[{ required: true, message: '请填写快递公司' }]"
                   placeholder="寄回快递公司名称" />
@@ -72,8 +72,8 @@
             <div class="sub mgt24">回寄信息错误？点击 <span class="changeAddress" @click="ChangeAddress(item)">这儿修改</span></div>
             <div class="mgt24 addressBox" v-show="showAddress">
               <van-form>
-                <van-field v-model="perInfo.shr" label="姓名" :rules="[{ required: true, message: '请填写寄件人姓名' }]"
-                  placeholder="寄件人姓名" />
+                <van-field v-model="perInfo.shr" :maxlength="4" label="姓名"
+                  :rules="[{ required: true, message: '请填写寄件人姓名' }]" placeholder="寄件人姓名" />
                 <van-field v-model="perInfo.shdh" label="电话" :rules="userTel" placeholder="寄件人手机" />
                 <van-field v-model="item.jhKuaidicom" label="快递公司" readonly
                   :rules="[{ required: true, message: '请填写快递公司' }]" placeholder="寄回快递公司名称" />
@@ -99,15 +99,21 @@
           </div>
 
           <!-- 产品问题在保修外，需要您付费维修 -->
-          <!-- <div class="stage5" v-if="item.gdStatus=='4' ">
-
-          </div> -->
+          <div class="stage5" v-if="item.gdStatus=='4' ">
+            <span class="sub">您需要支付{{item.money}}元</span>
+            <div class="mgt24">
+              <van-button round block type="info" native-type="submit" @click="jumpToPay">跳转支付页面</van-button>
+            </div>
+            <div class="mgt24">
+              <van-button round block plain type="info" native-type="submit" @click="jumpToPay">不想修了，寄回</van-button>
+            </div>
+          </div>
           <!-- 售后已完成处理并寄回，请您查收快递 -->
           <div class="stage5" v-if="item.gdStatus=='6' ">
             <div class="sub">回寄快递：{{item.hjKuaidicom}} </div>
             <div class="sub">回寄单号：{{item.hjKuaididanno}} </div>
             <div class="mgt24" v-show="isShowBut">
-              <van-button round block type="info"   @click="getConfirmReceipt">确认收件</van-button>
+              <van-button round block type="info" @click="getConfirmReceipt">确认收件</van-button>
             </div>
           </div>
           <!-- 产品已收到，售后流程结束 -->
@@ -123,12 +129,7 @@
   import {
     areaList
   } from "@vant/area-data";
-  import {
-    apiOrderDetail,
-    apiAddress,
-    apiReceipt,
-    apiChangeReceipt
-  } from '@/api/detail';
+  import { apiOrderDetail, apiAddress, apiReceipt, apiChangeReceipt, apiAgressPay } from '@/api/detail';
   export default {
     name: '',
     components: {},
@@ -141,7 +142,7 @@
         areaList,
         orderId: '', //订单Id
         ssqInfo: '', //省市区地址
-        isShowBut:false,//是否展示确认收获按钮
+        isShowBut: false, //是否展示确认收获按钮
         userTel: [{
           required: true,
           message: '手机号不能为空'
@@ -152,7 +153,7 @@
           message: "请输入正确格式的手机号"
         }],
         perInfo: {}, //寄件人信息
-        progessInfo: { },
+        progessInfo: {},
         progessList: [],
       }
     },
@@ -168,8 +169,10 @@
       // 提交地址表单
       async onSubmit() {
         let obj = {
-          userId: window.localStorage.getItem("userId"),
-          token: window.localStorage.getItem('token'),
+          userId: '7',
+          token: 'CEF5832E38898C62715A8EDCF06AA2A6',
+          // userId: window.localStorage.getItem("userId"),
+          // token: window.localStorage.getItem('token'),
           orderId: this.orderId,
         }
         let params = Object.assign(this.perInfo, obj);
@@ -178,7 +181,7 @@
         if (res.status == 0) {
           this.showSsq = false;
           this.getDetailInfo()
-        }else{
+        } else {
           this.$toast(res.errMsg)
         }
         console.log(res, "地址")
@@ -186,13 +189,16 @@
       // 获取详情页信息
       async getDetailInfo() {
         let params = {
-          userId: window.localStorage.getItem("userId"),
-          token: window.localStorage.getItem('token'),
+
+          // userId: window.localStorage.getItem("userId"),
+          // token: window.localStorage.getItem('token'),
+          userId: '7',
+          token: 'CEF5832E38898C62715A8EDCF06AA2A6',
           orderId: this.orderId,
         };
         const res = await apiOrderDetail(params)
-        if(res.realStatus=='6'){
-          this.isShowBut=true
+        if (res.realStatus == '6') {
+          this.isShowBut = true
         }
         this.progessInfo = res
         console.log(this.progessInfo, "this.progessInfo")
@@ -227,14 +233,17 @@
         this.ssqInfo = value.shprovince + value.shcity + value.sharea;
         console.log(this.perInfo, "2222")
       },
+      //确认修改
       async onSubmitChange() {
-         let obj = {
+        let obj = {
           userId: window.localStorage.getItem("userId"),
           token: window.localStorage.getItem('token'),
+          // userId: '7',
+          // token: 'CEF5832E38898C62715A8EDCF06AA2A6',
           orderId: this.orderId,
         }
         let params = Object.assign(this.perInfo, obj);
-        console.log(params,"修改的信息")
+        console.log(params, "修改的信息")
         const res = await apiChangeReceipt(params)
         if (res.status == 0) {
           this.showAddress = false
@@ -242,6 +251,25 @@
           this.getDetailInfo()
         }
       },
+      // 支付
+      async jumpToPay() {
+        let params = {
+          userId: window.localStorage.getItem("userId"),
+          token: window.localStorage.getItem('token'),
+          // userId: '7',
+          // token: 'CEF5832E38898C62715A8EDCF06AA2A6',
+          orderId: this.orderId,
+          isUserAgree: '1'
+        };
+        const res = await apiAgressPay(params)
+        if (res.status == 0) {
+          console.log(res, "收获确认")
+          this.getDetailInfo()
+        } else {
+          this.$toast(res.errMsg)
+        }
+      },
+
       // 确认收货
       async getConfirmReceipt() {
         let params = {
@@ -253,9 +281,9 @@
         if (res.status == 0) {
           this.$toast('已确认收货')
           console.log(res, "收获确认")
-          this.isShowBut=false
+          this.isShowBut = false
           this.getDetailInfo()
-        }else{
+        } else {
           this.$toast(res.errMsg)
         }
       },
