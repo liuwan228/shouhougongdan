@@ -335,13 +335,13 @@ export default {
 
 .pro_detail {
   .name {
-    font-size: 28px;
+    font-size: 32px;
     color: #1989fa;
     font-weight: 700;
   }
 
   .pro_sub {
-    font-size: 18px;
+    font-size: 24px;
     margin: 4px 0;
     color: #222;
   }
@@ -352,6 +352,7 @@ export default {
   .title {
     font-size: 30px;
     color: #1989fa;
+    margin-bottom: 4px;
   }
 
   .sub {

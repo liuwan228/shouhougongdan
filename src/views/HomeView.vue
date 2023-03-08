@@ -1,18 +1,18 @@
 <template>
   <div class="main">
-    <!-- <van-pull-refresh v-model="refreshing" @refresh="onRefresh"> -->
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
     <van-button round block icon="plus" type="info" @click="jump('./prolist')">新建工单</van-button>
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了">
-      <div class="list" v-for="(item,index) in orderList" :key="index">
+      <div class="list" v-for="(item,index) in orderList" :key="index"  @click="orderDetail(item.orderId)">
         <div class="left">
           <div class="name" @click="orderDetail(item.orderId)">{{item.proName}}</div>
           <div class="sub">{{chenkedSub(item.gdStatus)}}</div>
           <div class="number">{{item.bianhao}}</div>
         </div>
-        <div class="right" @click="orderDetail(item.orderId)">{{chenked(item.gdStatus)}}</div>
+        <div :class="['right',{'activeBut':item.gdStatus=='1'||item.gdStatus=='4'||item.gdStatus=='6'}] ">{{chenked(item.gdStatus)}}</div>
       </div>
     </van-list>
-    <!-- </van-pull-refresh> -->
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -30,7 +30,7 @@
         status: '',
         loading: true, //加载状态
         finished: false, //是否加载完成
-        // refreshing: false, //刷新
+        refreshing: false, //刷新
         openid: '',
       }
     },
@@ -43,11 +43,13 @@
     methods: {
       //获取工单列表数据
       async getOrderList() {
-        // if (this.refreshing) {
-        //   this.orderList = [];
-        //   this.refreshing = false;
-        // }
+        if (this.refreshing) {
+          this.orderList = [];
+          this.refreshing = false;
+        }
         const res = await apiOrderList({
+            // userId: '7',
+        // token: 'CEF5832E38898C62715A8EDCF06AA2A6',
           userId: window.localStorage.getItem("userId"),
           token: window.localStorage.getItem('token')
         })
@@ -68,14 +70,14 @@
 
 
       // 下拉刷新
-      // onRefresh() {
-      //   // 清空列表数据
-      //   this.finished = false;
-      //   // 重新加载数据
-      //   // 将 loading 设置为 true，表示处于加载状态
-      //   this.loading = true;
-      //   this.getOrderList();
-      // },
+      onRefresh() {
+        // 清空列表数据
+        this.finished = false;
+        // 重新加载数据
+        // 将 loading 设置为 true，表示处于加载状态
+        this.loading = true;
+        this.getOrderList();
+      },
       wxLogin() {
         // 定时器，为了让用户授权才能使用，如果没授权，则5秒后重新弹框提示用户授权
         // var tokenTimer = setInterval(() => {
@@ -155,15 +157,15 @@
           this.$router.push('./login')
         }
       },
-            // 工单状态
+        // 工单状态
       chenked(value) {
         switch (value) {
           case '0':
             return '等待客服联络'
           case '1':
-            return '售后寄回'
+            return '寄回售后'
           case '2':
-            return '等待售后收获'
+            return '等待售后收货'
           case '3':
             return '正在处理'
           case '4':
@@ -232,13 +234,13 @@
     }
 
     .sub {
-      font-size: 20px;
+      font-size: 24px;
       color: #666;
       margin: 12px 0;
     }
 
     .number {
-      font-size: 20px;
+      font-size: 24px;
       color: #666;
     }
   }
@@ -251,5 +253,12 @@
     align-items: center;
     justify-content: center;
     font-size: 28px;
+  }
+  .activeBut{
+    background-color: #1989fa;
+    color: #fff;
+    padding: 14px 10px;
+    text-align: center;
+    border-radius: 8px;
   }
 </style>

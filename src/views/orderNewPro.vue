@@ -1,13 +1,13 @@
 <template>
   <div class="main">
     <div class="font30">请输入 <span class="name">{{productInfo.proName}}</span> 的产品购买信息</div>
-    <van-form>
+    <van-form validate-first ref="form">
       <div class="mgt24">
         <van-field v-model="value" colon border label="" placeholder="请输入产品序列号" />
       </div>
-      <div class="tips mgt24">上传或拍摄产品铭牌</div>
+      <div class="tips mgt24">上传或拍摄产品铭牌 <span class="font18">（通常贴在产品底部）</span> </div>
       <div class="proImg mgt24">
-        <van-field name="uploader" colon label="">
+        <van-field :rules="[{ required: true, message: '请上传产品铭牌' }]" name="uploader" colon label="">
           <template #input>
             <van-uploader :after-read="afterReadMark" :before-read="beforeRead" max-count="1" preview-size="100px"
               v-model="markPhotoList" upload-text="点击上传">
@@ -38,8 +38,12 @@
 
 <script>
   import axios from "axios"
-  import { apiOrderPro } from '@/api/home';
-  import { mapState } from 'vuex'
+  import {
+    apiOrderPro
+  } from '@/api/home';
+  import {
+    mapState
+  } from 'vuex'
   export default {
     name: '',
     mixins: [],
@@ -48,15 +52,19 @@
     data() {
       return {
         value: '',
-        checked: true,
+        checked: false,
         markPhoto: '', //铭片地址
         billPhoto: '',
         markPhotoList: [], //铭牌
         billList: [], //发票
         productObj: {}, //产品信息
+         isUpload: false, //是否上传图片
+        isUploadDone: false, //是否上传结束
       }
     },
-    computed: {...mapState(['productInfo'])},
+    computed: {
+      ...mapState(['productInfo'])
+    },
     watch: {
 
     },
@@ -74,27 +82,35 @@
         return true;
       },
       afterReadMark(file) {
+        this.isUpload = true
+        this.isUploadDone = false
         this.uploadImg(file).then((res) => {
           const data = res.data
           if (data.status == 0) {
             this.markPhoto = data.filename
             file.status = 'done';
             file.message = '成功';
+            this.isUploadDone = true
           } else {
+             this.isUploadDone = false
             this.$toast('上传失败')
           }
         })
       },
       //上传购买凭证
       afterRead(file) {
+         this.isUpload = true
+        this.isUploadDone = false
         this.uploadImg(file).then((res) => {
           const data = res.data
           if (data.status == 0) {
             this.billPhoto = data.filename
             file.status = 'done';
             file.message = '成功';
+             this.isUploadDone = true
           } else {
             this.$toast('上传失败')
+             this.isUploadDone = false
           }
         })
       },
@@ -110,25 +126,47 @@
           }
         })
       },
-      async onSubmit() {
-        console.log(this.markPhoto, "this.markPhoto222")
-        let params = {
-          userId: window.localStorage.getItem("userId"),
-          token: window.localStorage.getItem('token'),
-          // token:'0086F7AEE3CE6A3395481A84F7D61172',
-          produitId: this.productInfo.produitId,
-          SN: this.value,
-          markPhoto: this.markPhoto,
-          billPhoto: this.billPhoto,
-          isByManufacture: this.checked ? '1' : '0'
-        };
-        const res = await apiOrderPro(params)
-        if (res.status == 0) {
-          this.sellId = res.sellId
-          this.$router.push({path:'./subques',query:{id:this.sellId}})
-        } else {
-          this.$toast(res.errMsg);
-        }
+      onSubmit() {
+        this.$refs.form.validate().then(() => {
+          // 验证通过
+          if (!this.checked) {
+            this.$toast('请上传购买凭证')
+            return
+          }
+          if (this.isUpload && !this.isUploadDone) {
+            this.$toast('请等待图片上传完成后提交')
+            return
+          }
+          let params = {
+            userId: window.localStorage.getItem("userId"),
+            token: window.localStorage.getItem('token'),
+            // token:'0086F7AEE3CE6A3395481A84F7D61172',
+            produitId: this.productInfo.produitId,
+            SN: this.value,
+            markPhoto: this.markPhoto,
+            billPhoto: this.billPhoto,
+            isByManufacture: this.checked ? '1' : '0'
+          }
+          apiOrderPro(params).then((res) => {
+            if (res.status == 0) {
+              this.sellId = res.sellId
+              this.$router.push({
+                path: './subques',
+                query: {
+                  id: this.sellId
+                }
+              })
+            } else {
+              this.$toast(res.errMsg);
+            }
+          })
+
+        }).catch(() => {
+          //验证失败
+          // this.$toast('校验失败')
+
+        })
+
 
       },
     }
@@ -152,7 +190,7 @@
     font-size: 26px;
 
     .font18 {
-      font-size: 18px;
+      font-size: 24px;
       color: #666;
     }
   }

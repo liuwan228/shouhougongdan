@@ -2,9 +2,10 @@
   <div class="main">
     <div class="font30">请输入 <span class="name">{{productInfo.proName}}</span> 的产品问题</div>
     <div>
-      <van-form >
+      <van-form ref="form">
         <div class="mgt24 text">
-          <van-field v-model="question" rows="5" border autosize label="" type="textarea" placeholder="请输入您遇到的产品问题" />
+          <van-field v-model="question" :rules="[{ required: true,}]" rows="7" border autosize label="" type="textarea"
+            placeholder="请输入您遇到的产品问题" />
         </div>
         <div class="font30 mgt24">请上传或拍摄有助于理解问题的照片</div>
         <div class="mgt24 uploadImg">
@@ -42,8 +43,10 @@
         fileList: [],
         sellId: '', //记录id
         uploadImage: [], //上传文件列表
-        photoList:[],//返回后文件列表
-        orderId:'',//问题id
+        photoList: [], //返回后文件列表
+        orderId: '', //问题id
+        isUpload: false, //是否上传图片
+        isUploadDone: false, //是否上传结束
       }
     },
     computed: {
@@ -55,22 +58,36 @@
     },
     mounted() {},
     methods: {
-      async onSubmit() {
-        let params = {
-          userId: window.localStorage.getItem("userId"),
-          token: window.localStorage.getItem('token'),
-          produitId: this.productInfo.produitId,
-          sellId: this.sellId,
-          question: this.question,
-          photo: this.photoList,
-        };
-        const res = await apiOrderQues(params)
-        if (res.status == 0) {
-          this.orderId = res.orderId;
-          this.$router.push('./home')
-        } else {
-          this.$toast(res.errMsg);
-        }
+      onSubmit() {
+        this.$refs.form.validate().then(() => {
+          // 验证通过
+          console.log("22222")
+          if (this.isUpload && !this.isUploadDone) {
+            this.$toast('请等待图片上传完成后提交')
+            return
+          }
+          console.log("11111111")
+          let params = {
+            userId: window.localStorage.getItem("userId"),
+            token: window.localStorage.getItem('token'),
+            produitId: this.productInfo.produitId,
+            sellId: this.sellId,
+            question: this.question,
+            photo: this.photoList,
+          };
+          apiOrderQues(params).then((res) => {
+            if (res.status == 0) {
+              this.orderId = res.orderId;
+              this.$router.push('./home')
+            } else {
+              this.$toast(res.errMsg);
+            }
+          })
+
+        }).catch(() => {
+          //验证失败
+        })
+
 
       },
 
@@ -90,14 +107,22 @@
         file.status = 'uploading';
         file.message = '上传中...';
         this.uploadImage.push(file.file)
+        this.isUpload = true
+        this.isUploadDone = false
         //向后台发送相应请求
-        axios.post('https://img2.orthok.cn/api/service/index', formdata, { headers: { 'content-type': 'application/x-www-form-urlencoded' } }).then(res => {
+        axios.post('https://img2.orthok.cn/api/service/index', formdata, {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          }
+        }).then(res => {
           const data = res.data
           if (data.status == 0) {
             this.photoList.push(data.filename)
             file.status = 'done';
             file.message = '上传成功';
+            this.isUploadDone = true
           } else {
+            this.isUploadDone = false
             this.$toast('上传失败')
           }
         })

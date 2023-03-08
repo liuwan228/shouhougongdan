@@ -12,7 +12,7 @@ const OrderDetail = () => import('../views/orderDetail.vue')
 const Login = () => import('../views/login.vue')
 
 Vue.use(VueRouter)
-
+/* eslint-disable */
 const routes = [{
     path: '',
     redirect: '/home'
@@ -21,6 +21,9 @@ const routes = [{
     path: '/home',
     name: 'home',
     component: HomeView,
+    meta: {
+      allowBack: false
+    },
   },
   {
     path: '/login',
@@ -55,9 +58,23 @@ const routes = [{
 
 ]
 
+
 const router = new VueRouter({
   mode: 'hash',
   routes,
 })
 
+
+router.afterEach((to, from) => {
+  // 监听路由变化，阻止首页后退
+  let allowBack = true; // 设置默认值
+  if (to.meta.allowBack !== undefined) {
+    allowBack = to.meta.allowBack;
+  }
+  if (!to.meta.allowBack) {
+    setTimeout(() => {
+      history.pushState(null, null, location.href);
+    });
+  }
+});
 export default router
