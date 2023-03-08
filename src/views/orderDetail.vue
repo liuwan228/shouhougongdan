@@ -72,7 +72,7 @@
             <div class="sub">回寄件人姓名：{{ item.shr }}</div>
             <div class="sub">回寄收件人手机号：{{ item.shdh }}</div>
             <div class="sub">回寄收件人地址：{{ item.shprovince + item.shcity + item.sharea + item.shdz }}</div>
-            <div class="sub mgt24">回寄信息错误？点击 <span class="changeAddress" @click="ChangeAddress(item)">这儿修改</span></div>
+            <div class="sub mgt24" v-if="progessInfo.realStatus<6">回寄信息错误？点击 <span class="changeAddress" @click="ChangeAddress(item)">这儿修改</span></div>
             <div class="mgt24 addressBox" v-show="showAddress">
               <van-form>
                 <van-field v-model="perInfo.shr" :maxlength="4" label="姓名"
@@ -251,6 +251,8 @@ export default {
       if (res.status == 0) {
         this.showAddress = false
         this.getDetailInfo()
+      }else{
+          this.$toast(res.errMsg)
       }
     },
     // 支付
