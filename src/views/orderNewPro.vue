@@ -62,7 +62,6 @@
     },
     created() {
       // this.productObj = this.$route.query.item
-      console.log(this.productInfo, "productInfo")
     },
     mounted() {},
     methods: {
@@ -81,7 +80,6 @@
             this.markPhoto = data.filename
             file.status = 'done';
             file.message = '成功';
-            console.log(this.markPhoto, "this.markPhoto")
           } else {
             this.$toast('上传失败')
           }
@@ -99,7 +97,6 @@
             this.$toast('上传失败')
           }
         })
-        console.log(this.billPhoto, "this.billPhoto")
       },
       //上传图片接口
       uploadImg(file) {

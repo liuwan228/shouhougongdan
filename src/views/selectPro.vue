@@ -41,7 +41,6 @@
       },
       jump(item) {
         this.$store.commit('setProductInfo', item)
-        console.log(item, "item")
         this.$router.push('./orderlist')
       }
     }

@@ -52,7 +52,6 @@
     watch: {},
     created() {
       this.sellId = this.$route.query.id
-      console.log(this.sellId, "sellId")
     },
     mounted() {},
     methods: {
@@ -65,7 +64,6 @@
           question: this.question,
           photo: this.photoList,
         };
-        console.log(params, "params")
         const res = await apiOrderQues(params)
         if (res.status == 0) {
           this.orderId = res.orderId;
@@ -86,18 +84,15 @@
       afterRead(file) {
         // 此时可以自行将文件上传至服务器
         //创建FormData对象。上传图片需要转换二进制，这里要用到FormData
-        console.log(file, "上传后file");
         const formdata = new FormData();
         //"file"表示给后台传的属性名字 
         formdata.append('file', file.file);
         file.status = 'uploading';
         file.message = '上传中...';
         this.uploadImage.push(file.file)
-        console.log(this.uploadImage, "单张")
         //向后台发送相应请求
         axios.post('https://img2.orthok.cn/api/service/index', formdata, { headers: { 'content-type': 'application/x-www-form-urlencoded' } }).then(res => {
           const data = res.data
-          console.log(data, "data")
           if (data.status == 0) {
             this.photoList.push(data.filename)
             file.status = 'done';
@@ -115,7 +110,6 @@
             break
           }
         }
-        console.log(this.uploadImage, "删除后的")
       },
 
     }

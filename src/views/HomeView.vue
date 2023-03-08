@@ -49,11 +49,8 @@
         // }
         const res = await apiOrderList({
           userId: window.localStorage.getItem("userId"),
-          // userId:'7',
           token: window.localStorage.getItem('token')
-          // token: 'CEF5832E38898C62715A8EDCF06AA2A6'
         })
-        console.log(res, "res")
         let orderList = res.list || []
         // 如果返回的数组是空或数组长度是0
         if (orderList == null || orderList.length === 0) {
@@ -84,8 +81,7 @@
         // var tokenTimer = setInterval(() => {
         // 判断有没有token
         const token = window.localStorage.getItem('token')
-        // const token = '0086F7AEE3CE6A3395481A84F7D61172'
-        console.log("token", token)
+        // const token = 'CEF5832E38898C62715A8EDCF06AA2A6'
         if (!token) {
           // 获取地址栏后面的参数code
           let code = this.getParam(window.location.href, 'code')
@@ -100,12 +96,10 @@
                 'content-type': 'application/x-www-form-urlencoded'
               }
             }).then(res => {
-              console.log(res, "resssssssss")
               const data = res.data
               if (data.status == 0) {
                 // clearInterval(tokenTimer) // 清除定时器
                 // this.$toast('授权成功') // 提示用户授权成功
-                console.log(data, "data")
                 this.openid = data.openid
                 this.$store.commit('setOpenId', data.openid)
                 this.getUserInfo()
@@ -131,7 +125,6 @@
            * 并清除定时器
            */
           // clearInterval(tokenTimer)
-          console.log("已经有token了", token)
           this.getOrderList() // 获取用户信息接口，自己定义的
         }
         // }, 8000)
@@ -153,7 +146,6 @@
         let res = await apiGetUserInfo({
           openid: this.openid
         })
-        console.log(res, "用户信息")
         if (res.status == 0) {
           this.$store.commit('setUserId', res.userId)
           window.localStorage.setItem("userId", res.userId)

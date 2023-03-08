@@ -35,7 +35,7 @@
     watch: {},
     created() { },
     mounted() {
-      // this.getOrderProList()
+      this.getOrderProList()
     },
     methods: {
       async getOrderProList() {
@@ -44,7 +44,6 @@
           token: window.localStorage.getItem('token'),
           produitId:this.productInfo.produitId,
         }
-        console.log(params, "params")
         const res = await apiSellList(params)
         if (res.status == 0) {
           this.orderProList = res.list || []

@@ -4,7 +4,8 @@ import router from './router'
 import store from './store'
 import './assets/css/reset.css'
 import 'lib-flexible'
-
+import VueClipBoard from 'vue-clipboard2'
+Vue.use(VueClipBoard)
 //引入vant组件
 import { List } from 'vant';
 import { PullRefresh } from 'vant';

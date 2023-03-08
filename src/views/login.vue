@@ -74,7 +74,6 @@
           if (res.status == 0) {
             this.$toast('验证码已发送')
           }
-          console.log("验证码", res)
         })
         this.disabled = true;
         //倒计时
