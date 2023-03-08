@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main" id="scroll">
     <div class="pro_detail">
       <div class="name">{{ progessInfo.proName }}</div>
       <div class="pro_sub">序列号：{{ progessInfo.SN }}</div>
@@ -48,8 +48,8 @@
                 <van-field v-model="perInfo.shdh" label="手机号" :rules="userTel" placeholder="寄件人手机" />
                 <van-field v-model="perInfo.jhKuaidicom" label="快递公司" :rules="[{ required: true, message: '请填写快递公司' }]"
                   placeholder="寄回快递公司名称" />
-                <van-field v-model="perInfo.jhKuaididanno" label="快递单号" :rules="[{ required: true, message: '请填写快递单号' }]"
-                  placeholder="寄回快递单号" />
+                <van-field v-model="perInfo.jhKuaididanno" label="快递单号"
+                  :rules="[{ required: true, message: '请填写快递单号' }]" placeholder="寄回快递单号" />
                 <van-field @click="showSsq = true" label="地区" :rules="[{ required: true, message: '请选择地址' }]"
                   v-model="ssqInfo" right-icon="arrow" placeholder="选择省/市/区" />
                 <van-popup v-model="showSsq" position="bottom" :style="{ height: '30%', width: '100%' }">
@@ -72,7 +72,8 @@
             <div class="sub">回寄件人姓名：{{ item.shr }}</div>
             <div class="sub">回寄收件人手机号：{{ item.shdh }}</div>
             <div class="sub">回寄收件人地址：{{ item.shprovince + item.shcity + item.sharea + item.shdz }}</div>
-            <div class="sub mgt24" v-if="progessInfo.realStatus<6">回寄信息错误？点击 <span class="changeAddress" @click="ChangeAddress(item)">这儿修改</span></div>
+            <div class="sub mgt24" v-if="progessInfo.realStatus<6">回寄信息错误？点击 <span class="changeAddress"
+                @click="ChangeAddress(item)">这儿修改</span></div>
             <div class="mgt24 addressBox" v-show="showAddress">
               <van-form>
                 <van-field v-model="perInfo.shr" :maxlength="4" label="姓名"
@@ -136,255 +137,302 @@
 </template>
 
 <script>
-import {
-  areaList
-} from "@vant/area-data";
-import { apiOrderDetail, apiAddress, apiReceipt, apiChangeReceipt, apiAgressPay } from '@/api/detail';
-export default {
-  name: '',
-  components: {},
-  props: {},
-  data() {
-    return {
-      showSsq: false, //省市区选择
-      showAddress: false, //显示修改地址
-      showSSQ: false,
-      areaList,
-      orderId: '', //订单Id
-      ssqInfo: '', //省市区地址
-      isShowBut: false, //是否展示确认收获按钮
-      userTel: [{
-        required: true,
-        message: '手机号不能为空'
-      }, {
-        validator: value => {
-          return /^1[23456789]\d{9}$/.test(value);
-        },
-        message: "请输入正确格式的手机号"
-      }],
-      perInfo: {}, //寄件人信息
-      progessInfo: {},
-      progessList: [],
-      isShowPay: false,
-    }
-  },
-  computed: {},
-  watch: {},
-  created() {
-    this.orderId = this.$route.query.id
-  },
-  mounted() {
-    this.getDetailInfo()
-  },
-  methods: {
-    // 提交地址表单
-    async onSubmit() {
-      let obj = {
-        userId: window.localStorage.getItem("userId"),
-        token: window.localStorage.getItem('token'),
-        orderId: this.orderId,
-      }
-      let params = Object.assign(this.perInfo, obj);
-      const res = await apiAddress(params)
-      if (res.status == 0) {
-        this.showSsq = false;
-        this.getDetailInfo()
-      } else {
-        this.$toast(res.errMsg)
-      }
-    },
-    // 获取详情页信息
-    async getDetailInfo() {
-      let params = {
-        userId: window.localStorage.getItem("userId"),
-        token: window.localStorage.getItem('token'),
-        // userId: '7',
-        // token: 'CEF5832E38898C62715A8EDCF06AA2A6',
-        orderId: this.orderId,
-      };
-      const res = await apiOrderDetail(params)
-      if (res.realStatus == '6') {
-        this.isShowBut = true
-      }
-      if (res.realStatus == '4') {
-        this.isShowPay = true
-      }
-      this.progessInfo = res
-      this.progessList = res.list
-
-    },
-    // 选择省市区
-    confirmAddress(val) {
-      this.ssqInfo = val
-        .filter((item) => !!item)
-        .map((item) => item.name)
-        .join('/');
-      this.$set(this.perInfo, 'shprovince', val[0].name)
-      this.$set(this.perInfo, 'shcity', val[1].name)
-      this.$set(this.perInfo, 'sharea', val[2].name)
-      // this.ssqInfo = val[0].name + val[1].name + val[2].name
-      this.$nextTick(() => {
-        this.showSsq = false
-      });
-    },
-    // 修改地址
-    ChangeAddress(value) {
-      this.showAddress = true
-      console.log(value, "value")
-      this.$set(this.perInfo, 'shr', value.shr)
-      this.$set(this.perInfo, 'shdh', value.shdh)
-      this.$set(this.perInfo, 'shdz', value.shdz)
-      this.$set(this.perInfo, 'shprovince', value.shprovince)
-      this.$set(this.perInfo, 'shcity', value.shcity)
-      this.$set(this.perInfo, 'sharea', value.sharea)
-      this.ssqInfo = value.shprovince + value.shcity + value.sharea;
-    },
-    //确认修改
-    async onSubmitChange() {
-      let obj = {
-        userId: window.localStorage.getItem("userId"),
-        token: window.localStorage.getItem('token'),
-        orderId: this.orderId,
-      }
-      let params = Object.assign(this.perInfo, obj);
-      const res = await apiChangeReceipt(params)
-      if (res.status == 0) {
-        this.showAddress = false
-        this.getDetailInfo()
-      }else{
-          this.$toast(res.errMsg)
+  import {
+    areaList
+  } from "@vant/area-data";
+  import {
+    apiOrderDetail,
+    apiAddress,
+    apiReceipt,
+    apiChangeReceipt,
+    apiAgressPay
+  } from '@/api/detail';
+  export default {
+    name: '',
+    components: {},
+    props: {},
+    data() {
+      return {
+        showSsq: false, //省市区选择
+        showAddress: false, //显示修改地址
+        showSSQ: false,
+        areaList,
+        orderId: '', //订单Id
+        ssqInfo: '', //省市区地址
+        isShowBut: false, //是否展示确认收获按钮
+        userTel: [{
+          required: true,
+          message: '手机号不能为空'
+        }, {
+          validator: value => {
+            return /^1[23456789]\d{9}$/.test(value);
+          },
+          message: "请输入正确格式的手机号"
+        }],
+        perInfo: {}, //寄件人信息
+        progessInfo: {},
+        progessList: [{
+          time: '2023年2月9日 13:21',
+          gdStatus: '0',
+          sub: '完成提交，等待客服联络',
+          info: '功能不好',
+          imgUrl: [{
+            url: require('@/assets/img/pro1.jpg'),
+            id: '1'
+          }, {
+            url: require('@/assets/img/pro1.jpg'),
+            id: '2'
+          }],
+        }, {
+          time: '2023年2月10日 13:21',
+          gdStatus: '1',
+          sub: '客服已联络，请将产品寄回',
+          info: '功能不好',
+          imgUrl: [{
+            url: require('@/assets/img/pro1.jpg'),
+            id: '1'
+          }, {
+            url: require('@/assets/img/pro1.jpg'),
+            id: '2'
+          }],
+        }, {
+          time: '2023年2月11日 13:21',
+          gdStatus: '2',
+          sub: '产品已寄回，请等待售后人员收货检测',
+          express_name: '韵达',
+          express_num: '400-630-0595',
+          person_name: '李四',
+          person_tel: '15256738723',
+          person_address: '安徽省合肥市高新区望江西路4899号',
+        }],
+        isShowPay: false,
       }
     },
-    // 支付
-    async jumpToPay() {
-      let params = {
-        userId: window.localStorage.getItem("userId"),
-        token: window.localStorage.getItem('token'),
-        orderId: this.orderId,
-        isUserAgree: '1'
-      };
-      const res = await apiAgressPay(params)
-      if (res.status == 0) {
-        this.isShowPay = false
-        this.getDetailInfo()
-      } else {
-        this.$toast(res.errMsg)
-      }
+    computed: {},
+    watch: {},
+    created() {
+      this.orderId = this.$route.query.id
     },
-
-    // 确认收货
-    async getConfirmReceipt() {
-      let params = {
-        userId: window.localStorage.getItem("userId"),
-        token: window.localStorage.getItem('token'),
-        orderId: this.orderId,
-      };
-      const res = await apiReceipt(params)
-      if (res.status == 0) {
-        this.$toast('已确认收货')
-        this.isShowBut = false
-        this.getDetailInfo()
-      } else {
-        this.$toast(res.errMsg)
-      }
+    mounted() {
+      this.getDetailInfo()
     },
-    // 一键复制
-    copy() {
-      let text = document.getElementById('text').innerText;
-      this.$copyText(text).then(
-        e => {
-          console.log('复制成功：', e);
-          this.$toast('已复制到剪切板')
-        },
-        e => {
-          console.log('复制失败：', e);
+    methods: {
+      // 提交地址表单
+      async onSubmit() {
+        let obj = {
+          userId: window.localStorage.getItem("userId"),
+          token: window.localStorage.getItem('token'),
+          orderId: this.orderId,
         }
-      )
-    },
-    // 工单状态
-    chenkedStatus(value) {
-      switch (value) {
-        case '0':
-          return '完成提交，等待客服联络'
-        case '1':
-          return '客服已联络，请将产品寄回'
-        case '2':
-          return '产品已寄回，请等待售后人员收货检测'
-        case '3':
-          return '售后已收到产品，正在进行检测'
-        case '4':
-          return '产品问题在保修外，需要您付费维修'
-        case '5':
-          return '维修费用已支付，售后正在维修中'
-        case '6':
-          return '售后已完成处理并寄回，请您查收快递'
-        case '7':
-          return '产品已收到，售后流程结束'
-        case '9':
-          return '客服已联络解决问题，售后流程结束'
+        let params = Object.assign(this.perInfo, obj);
+        const res = await apiAddress(params)
+        if (res.status == 0) {
+          this.showSsq = false;
+          this.getDetailInfo()
+        } else {
+          this.$toast(res.errMsg)
+        }
+      },
+      // 获取详情页信息
+      async getDetailInfo() {
+        let params = {
+          userId: window.localStorage.getItem("userId"),
+          token: window.localStorage.getItem('token'),
+          // userId: '7',
+          // token: 'CEF5832E38898C62715A8EDCF06AA2A6',
+          orderId: this.orderId,
+        };
+        const res = await apiOrderDetail(params)
+        if (res.realStatus == '6') {
+          this.isShowBut = true
+        }
+        if (res.realStatus == '4') {
+          this.isShowPay = true
+        }
+        this.progessInfo = res
+        // this.progessList = res.list
+
+      },
+      // 选择省市区
+      confirmAddress(val) {
+        this.ssqInfo = val
+          .filter((item) => !!item)
+          .map((item) => item.name)
+          .join('/');
+        this.$set(this.perInfo, 'shprovince', val[0].name)
+        this.$set(this.perInfo, 'shcity', val[1].name)
+        this.$set(this.perInfo, 'sharea', val[2].name)
+        // this.ssqInfo = val[0].name + val[1].name + val[2].name
+        this.$nextTick(() => {
+          this.showSsq = false
+        });
+      },
+      // 修改地址
+      ChangeAddress(value) {
+        this.showAddress = true
+        this.scrollToBottom()
+        console.log(value, "value")
+        this.$set(this.perInfo, 'shr', value.shr)
+        this.$set(this.perInfo, 'shdh', value.shdh)
+        this.$set(this.perInfo, 'shdz', value.shdz)
+        this.$set(this.perInfo, 'shprovince', value.shprovince)
+        this.$set(this.perInfo, 'shcity', value.shcity)
+        this.$set(this.perInfo, 'sharea', value.sharea)
+        this.ssqInfo = value.shprovince + value.shcity + value.sharea;
+      },
+      //确认修改
+      async onSubmitChange() {
+        let obj = {
+          userId: window.localStorage.getItem("userId"),
+          token: window.localStorage.getItem('token'),
+          orderId: this.orderId,
+        }
+        let params = Object.assign(this.perInfo, obj);
+        const res = await apiChangeReceipt(params)
+        if (res.status == 0) {
+          this.showAddress = false
+          this.getDetailInfo()
+          
+        } else {
+          this.$toast(res.errMsg)
+        }
+      },
+      // 支付
+      async jumpToPay() {
+        let params = {
+          userId: window.localStorage.getItem("userId"),
+          token: window.localStorage.getItem('token'),
+          orderId: this.orderId,
+          isUserAgree: '1'
+        };
+        const res = await apiAgressPay(params)
+        if (res.status == 0) {
+          this.isShowPay = false
+          this.getDetailInfo()
+        } else {
+          this.$toast(res.errMsg)
+        }
+      },
+
+      // 确认收货
+      async getConfirmReceipt() {
+        let params = {
+          userId: window.localStorage.getItem("userId"),
+          token: window.localStorage.getItem('token'),
+          orderId: this.orderId,
+        };
+        const res = await apiReceipt(params)
+        if (res.status == 0) {
+          this.$toast('已确认收货')
+          this.isShowBut = false
+          this.getDetailInfo()
+        } else {
+          this.$toast(res.errMsg)
+        }
+      },
+      // 一键复制
+      copy() {
+        let text = document.getElementById('text').innerText;
+        this.$copyText(text).then(
+          e => {
+            console.log('复制成功：', e);
+            this.$toast('已复制到剪切板')
+          },
+          e => {
+            console.log('复制失败：', e);
+          }
+        )
+      },
+      // 工单状态
+      chenkedStatus(value) {
+        switch (value) {
+          case '0':
+            return '完成提交，等待客服联络'
+          case '1':
+            return '客服已联络，请将产品寄回'
+          case '2':
+            return '产品已寄回，请等待售后人员收货检测'
+          case '3':
+            return '售后已收到产品，正在进行检测'
+          case '4':
+            return '产品问题在保修外，需要您付费维修'
+          case '5':
+            return '维修费用已支付，售后正在维修中'
+          case '6':
+            return '售后已完成处理并寄回，请您查收快递'
+          case '7':
+            return '产品已收到，售后流程结束'
+          case '9':
+            return '客服已联络解决问题，售后流程结束'
+        }
+      },
+      scrollToBottom() {
+        this.$nextTick(() => {
+          var div = document.getElementById('scroll')
+          div.scrollTop = div.scrollHeight
+        })
       }
-    },
+    }
   }
-}
 </script>
 
 <style scoped lang="scss">
-::v-deep .van-button--round {
-  border-radius: 16px;
-}
+  ::v-deep .van-button--round {
+    border-radius: 16px;
+  }
 
-.pro_detail {
-  .name {
-    font-size: 32px;
+  .pro_detail {
+    .name {
+      font-size: 32px;
+      color: #1989fa;
+      font-weight: 700;
+    }
+
+    .pro_sub {
+      font-size: 24px;
+      margin: 4px 0;
+      color: #222;
+    }
+
+  }
+
+  .orde_status {
+    .title {
+      font-size: 30px;
+      color: #1989fa;
+      margin-bottom: 4px;
+    }
+
+    .sub {
+      margin-top: 8px;
+      color: #666;
+    }
+
+    ::v-deep .van-field__label {
+      width: 4.2em;
+    }
+
+    // ::v-deep .van-cell {
+    //     border: 1px solid #ebedf0;
+    //     margin-top: 24px;
+    //   }
+    ::v-deep .van-step__circle {
+      width: 24px;
+      height: 24px;
+    }
+
+    ::v-deep .van-step__circle-container {
+      font-size: 36px;
+    }
+  }
+
+  //地址
+  .addressBox .van-address-edit {
+    padding: 0;
+  }
+
+  .changeAddress {
     color: #1989fa;
-    font-weight: 700;
+    text-decoration: underline;
   }
-
-  .pro_sub {
-    font-size: 24px;
-    margin: 4px 0;
-    color: #222;
-  }
-
-}
-
-.orde_status {
-  .title {
-    font-size: 30px;
-    color: #1989fa;
-    margin-bottom: 4px;
-  }
-
-  .sub {
-    margin-top: 8px;
-    color: #666;
-  }
-
-  ::v-deep .van-field__label {
-    width: 4.2em;
-  }
-
-  // ::v-deep .van-cell {
-  //     border: 1px solid #ebedf0;
-  //     margin-top: 24px;
-  //   }
-  ::v-deep .van-step__circle {
-    width: 24px;
-    height: 24px;
-  }
-
-  ::v-deep .van-step__circle-container {
-    font-size: 36px;
-  }
-}
-
-//地址
-.addressBox .van-address-edit {
-  padding: 0;
-}
-
-.changeAddress {
-  color: #1989fa;
-  text-decoration: underline;
-}
 </style>
