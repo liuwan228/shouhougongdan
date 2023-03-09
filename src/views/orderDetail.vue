@@ -227,7 +227,7 @@
             this.$set(this.perInfo, 'shdz', item.lastShdz)
             this.$set(this.perInfo, 'shdh', item.lastShdh)
             this.$set(this.perInfo, 'shr', item.lastShr)
-            this.ssqInfo = `${item.lastShprovince}/${item.lastShcity}/${item.lastSharea}`;
+            this.ssqInfo = `${item.lastShprovince}${item.lastShcity}${item.lastSharea}`;
           }
         })
 

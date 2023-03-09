@@ -110,7 +110,6 @@
                 'content-type': 'application/x-www-form-urlencoded'
               }
             }).then(res => {
-              console.log(res, "res")
               const data = res.data
               if (data.status == 0) {
                 // clearInterval(tokenTimer) // 清除定时器
@@ -120,10 +119,7 @@
                 this.getUserInfo()
                 //未注册跳转到注册页，携带openId
               } else {
-                this.$toast({
-                  message: "授权失败，请稍后重试...",
-                  icon: 'none'
-                })
+                this.$toast(data.errMSg)
               }
             })
           } else {
@@ -241,6 +237,9 @@
     border-radius: 16px;
   }
 
+::v-deep .van-pull-refresh{
+  height: 100%;
+}
   .left {
     flex: 1;
 
