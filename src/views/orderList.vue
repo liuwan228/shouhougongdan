@@ -42,6 +42,8 @@
         let params = {
           userId: window.localStorage.getItem("userId"),
           token: window.localStorage.getItem('token'),
+          // userId: '7',
+          // token: 'CEF5832E38898C62715A8EDCF06AA2A6',
           produitId:this.productInfo.produitId,
         }
         const res = await apiSellList(params)

@@ -61,15 +61,15 @@
       onSubmit() {
         this.$refs.form.validate().then(() => {
           // 验证通过
-          console.log("22222")
           if (this.isUpload && !this.isUploadDone) {
             this.$toast('请等待图片上传完成后提交')
             return
           }
-          console.log("11111111")
           let params = {
             userId: window.localStorage.getItem("userId"),
             token: window.localStorage.getItem('token'),
+            // userId: '7',
+            // token: 'CEF5832E38898C62715A8EDCF06AA2A6',
             produitId: this.productInfo.produitId,
             sellId: this.sellId,
             question: this.question,
@@ -78,7 +78,7 @@
           apiOrderQues(params).then((res) => {
             if (res.status == 0) {
               this.orderId = res.orderId;
-              this.$router.push('./home')
+              this.$router.replace({path:'./home'})
             } else {
               this.$toast(res.errMsg);
             }

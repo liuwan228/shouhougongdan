@@ -15,7 +15,9 @@
           <div class="stage1" v-if="item.gdStatus == '0'">
             <div class="sub">问题描述： {{ item.question }} </div>
             <div class="imgList" v-show="item.photo !== ''">
-              <van-image width="60" height="60" :src="item.photo" />
+              <div v-for="(item,index) in item.photo.split(',')" :key="index" class="img_box">
+                <van-image width="60" height="60" :src="item" />
+              </div>
             </div>
             <div class="sub">客服将在1个工作日内回电，请保持电话畅通，或直接拨打热线电话：400-630-0595</div>
           </div>
@@ -30,16 +32,13 @@
                 <li>· 请将产品问题简述和手机号码写在一张小卡片上，随产品一起寄回。</li>
                 <li>· 请将产品妥善打包，尽可能使用原包装，并附所有配件。寄到如下地址。</li>
               </ul>
-            </div>
-            <br>
+            </div><br>
             <div id="text">
               <div class="sub">收件地址：安徽省合肥市高新区望江西路4899号欧普康视</div>
               <div class="sub">收件人：李芳玲</div>
               <div class="sub">收件电话：0551-65319181 </div>
             </div>
-
-            <div><span class="changeAddress" @click="copy()">复制以上地址</span></div>
-            <br>
+            <div><span class="changeAddress" @click="copy()">复制以上地址</span></div><br>
             <div class="sub">寄出后，请填写如下信息，以便我们跟踪您寄出的产品和给您寄回产品。</div>
             <div class="mgt24 addressBox" v-if="progessList.length < 3">
               <van-form>
@@ -171,40 +170,7 @@
         }],
         perInfo: {}, //寄件人信息
         progessInfo: {},
-        progessList: [{
-          time: '2023年2月9日 13:21',
-          gdStatus: '0',
-          sub: '完成提交，等待客服联络',
-          info: '功能不好',
-          imgUrl: [{
-            url: require('@/assets/img/pro1.jpg'),
-            id: '1'
-          }, {
-            url: require('@/assets/img/pro1.jpg'),
-            id: '2'
-          }],
-        }, {
-          time: '2023年2月10日 13:21',
-          gdStatus: '1',
-          sub: '客服已联络，请将产品寄回',
-          info: '功能不好',
-          imgUrl: [{
-            url: require('@/assets/img/pro1.jpg'),
-            id: '1'
-          }, {
-            url: require('@/assets/img/pro1.jpg'),
-            id: '2'
-          }],
-        }, {
-          time: '2023年2月11日 13:21',
-          gdStatus: '2',
-          sub: '产品已寄回，请等待售后人员收货检测',
-          express_name: '韵达',
-          express_num: '400-630-0595',
-          person_name: '李四',
-          person_tel: '15256738723',
-          person_address: '安徽省合肥市高新区望江西路4899号',
-        }],
+        progessList: [],
         isShowPay: false,
       }
     },
@@ -249,8 +215,21 @@
         if (res.realStatus == '4') {
           this.isShowPay = true
         }
+
         this.progessInfo = res
-        // this.progessList = res.list
+        this.progessList = res.list
+        console.log(this.progessList, "this.progessList")
+        this.progessList.forEach(item => {
+          if (item.gdStatus == '1') {
+            this.$set(this.perInfo, 'shprovince', item.lastShprovince)
+            this.$set(this.perInfo, 'shcity', item.lastShcity)
+            this.$set(this.perInfo, 'sharea', item.lastSharea)
+            this.$set(this.perInfo, 'shdz', item.lastShdz)
+            this.$set(this.perInfo, 'shdh', item.lastShdh)
+            this.$set(this.perInfo, 'shr', item.lastShr)
+            this.ssqInfo = `${item.lastShprovince}/${item.lastShcity}/${item.lastSharea}`;
+          }
+        })
 
       },
       // 选择省市区
@@ -292,7 +271,7 @@
         if (res.status == 0) {
           this.showAddress = false
           this.getDetailInfo()
-          
+
         } else {
           this.$toast(res.errMsg)
         }
@@ -379,6 +358,19 @@
 <style scoped lang="scss">
   ::v-deep .van-button--round {
     border-radius: 16px;
+  }
+
+  .imgList {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 18px 0;
+
+    .img_box {
+      margin-right: 10px;
+    }
   }
 
   .pro_detail {
