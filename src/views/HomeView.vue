@@ -9,6 +9,7 @@
             <div class="sub">{{chenkedSub(item.gdStatus)}}</div>
             <div class="number">{{item.bianhao}}</div>
           </div>
+        
           <div :class="['right',{'activeBut':item.gdStatus=='1'||item.gdStatus=='4'||item.gdStatus=='6'}] ">
             {{chenked(item.gdStatus)}}</div>
         </div>

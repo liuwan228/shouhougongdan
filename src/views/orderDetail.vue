@@ -42,13 +42,13 @@
             <div class="sub">寄出后，请填写如下信息，以便我们跟踪您寄出的产品和给您寄回产品。</div>
             <div class="mgt24 addressBox" v-if="progessList.length < 3">
               <van-form>
-                <van-field v-model="perInfo.shr" :maxlength="4" label="姓名"
-                  :rules="[{ required: true, message: '请填写寄件人姓名' }]" placeholder="寄件人姓名" />
-                <van-field v-model="perInfo.shdh" label="手机号" :rules="userTel" placeholder="寄件人手机" />
                 <van-field v-model="perInfo.jhKuaidicom" label="快递公司" :rules="[{ required: true, message: '请填写快递公司' }]"
                   placeholder="寄回快递公司名称" />
                 <van-field v-model="perInfo.jhKuaididanno" label="快递单号"
                   :rules="[{ required: true, message: '请填写快递单号' }]" placeholder="寄回快递单号" />
+                <van-field v-model="perInfo.shr" :maxlength="4" label="姓名"
+                  :rules="[{ required: true, message: '请填写寄件人姓名' }]" placeholder="寄件人姓名" />
+                <van-field v-model="perInfo.shdh" label="手机号" :rules="userTel" placeholder="寄件人手机" />
                 <van-field @click="showSsq = true" label="地区" :rules="[{ required: true, message: '请选择地址' }]"
                   v-model="ssqInfo" right-icon="arrow" placeholder="选择省/市/区" />
                 <van-popup v-model="showSsq" position="bottom" :style="{ height: '30%', width: '100%' }">
@@ -75,13 +75,13 @@
                 @click="ChangeAddress(item)">这儿修改</span></div>
             <div class="mgt24 addressBox" v-show="showAddress">
               <van-form>
-                <van-field v-model="perInfo.shr" :maxlength="4" label="姓名"
-                  :rules="[{ required: true, message: '请填写寄件人姓名' }]" placeholder="寄件人姓名" />
-                <van-field v-model="perInfo.shdh" label="电话" :rules="userTel" placeholder="寄件人手机" />
                 <van-field v-model="item.jhKuaidicom" label="快递公司" readonly
                   :rules="[{ required: true, message: '请填写快递公司' }]" placeholder="寄回快递公司名称" />
                 <van-field v-model="item.jhKuaididanno" readonly label="快递单号"
                   :rules="[{ required: true, message: '请填写快递单号' }]" placeholder="寄回快递单号" />
+                <van-field v-model="perInfo.shr" :maxlength="4" label="姓名"
+                  :rules="[{ required: true, message: '请填写寄件人姓名' }]" placeholder="寄件人姓名" />
+                <van-field v-model="perInfo.shdh" label="电话" :rules="userTel" placeholder="寄件人手机" />
                 <van-field @click="showSsq = true" label="地区" :rules="[{ required: true, message: '请选择地址' }]"
                   v-model="ssqInfo" right-icon="arrow" placeholder="选择省/市/区" />
                 <van-popup v-model="showSsq" position="bottom" :style="{ height: '30%', width: '100%' }">
