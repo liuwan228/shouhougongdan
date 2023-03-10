@@ -2,19 +2,23 @@
   <div class="main">
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <van-button round block icon="plus" type="info" @click="jump('./prolist')">新建工单</van-button>
-      <van-list v-model="loading" :finished="finished" finished-text="没有更多了">
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" v-if="orderList.length>0">
         <div class="list" v-for="(item,index) in orderList" :key="index" @click="orderDetail(item.orderId)">
           <div class="left">
             <div class="name" @click="orderDetail(item.orderId)">{{item.proName}}</div>
             <div class="sub">{{chenkedSub(item.gdStatus)}}</div>
             <div class="number">{{item.bianhao}}</div>
           </div>
-        
+
           <div :class="['right',{'activeBut':item.gdStatus=='1'||item.gdStatus=='4'||item.gdStatus=='6'}] ">
             {{chenked(item.gdStatus)}}</div>
         </div>
       </van-list>
+      <div class="empty" v-else>
+      <van-empty class="custom-image" :image="emptyUrl" description="暂无内容" />
+    </div>
     </van-pull-refresh>
+    
   </div>
 </template>
 
@@ -31,6 +35,7 @@
     props: {},
     data() {
       return {
+        emptyUrl: require('../assets/img/bg.png'),
         orderList: [],
         status: '',
         loading: true, //加载状态
@@ -61,8 +66,6 @@
           this.refreshing = false;
         }
         const res = await apiOrderList({
-          // userId: '7',
-          // token: 'CEF5832E38898C62715A8EDCF06AA2A6',
           userId: window.localStorage.getItem("userId"),
           token: window.localStorage.getItem('token')
         })
@@ -77,6 +80,7 @@
         for (let i = 0; i < orderList.length; i++) {
           let item = orderList[i]
           this.orderList.push(item)
+
         }
         this.finished = this.orderList.length >= res.list.length
       },
@@ -216,10 +220,10 @@
       jump(url) {
         this.$router.push(url)
       },
-    goBack () {
+      goBack() {
         // console.log("点击了浏览器的返回按钮");
         history.pushState(null, null, document.URL);
-    },
+      },
       // 跳转到工单详情页
       orderDetail(id) {
         console.log(id, "id")
@@ -238,9 +242,10 @@
     border-radius: 16px;
   }
 
-::v-deep .van-pull-refresh{
-  height: 100%;
-}
+  // ::v-deep .van-pull-refresh {
+  //   height: 100%;
+  // }
+
   .left {
     flex: 1;
 
@@ -279,4 +284,13 @@
     text-align: center;
     border-radius: 8px;
   }
+
+  .empty{
+        position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    width: 100%;
+}
+  
 </style>

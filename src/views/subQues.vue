@@ -98,7 +98,8 @@
         }
         return file
       },
-      afterRead(file) {
+      afterRead(file,detail) {
+        let index =detail.index
         // 此时可以自行将文件上传至服务器
         //创建FormData对象。上传图片需要转换二进制，这里要用到FormData
         const formdata = new FormData();
@@ -106,7 +107,7 @@
         formdata.append('file', file.file);
         file.status = 'uploading';
         file.message = '上传中...';
-        this.uploadImage.push(file.file)
+        // this.uploadImage.push(file.file)
         this.isUpload = true
         this.isUploadDone = false
         //向后台发送相应请求
@@ -117,10 +118,11 @@
         }).then(res => {
           const data = res.data
           if (data.status == 0) {
-            this.photoList.push(data.filename)
+            this.photoList[index]=data.filename
             file.status = 'done';
             file.message = '上传成功';
             this.isUploadDone = true
+            console.log(this.photoList,"this.photoList")
           } else {
             this.isUploadDone = false
             this.$toast('上传失败')
@@ -128,10 +130,10 @@
         })
       },
       //删除方法
-      deleteImg(file) {
-        for (let i = 0, len = this.uploadImage.length; i < len; i++) {
-          if (file.file.name === this.uploadImage[i].name && file.file.size === this.uploadImage[i].size) {
-            this.uploadImage.splice(i, 1)
+      deleteImg(file,detail) {
+        for (let i = 0, len = this.photoList.length; i < len; i++) {
+          if (detail.index === i) {
+            this.photoList.splice(i, 1)
             break
           }
         }

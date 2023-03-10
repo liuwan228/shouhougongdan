@@ -20,6 +20,9 @@ import { Image as VanImage } from 'vant';
 import { AddressEdit } from 'vant';
 import { Area } from 'vant';
 import { Popup } from 'vant';
+import { Empty } from 'vant';
+
+Vue.use(Empty);
 Vue.use(Popup);
 Vue.use(Area);
 Vue.use(AddressEdit);
