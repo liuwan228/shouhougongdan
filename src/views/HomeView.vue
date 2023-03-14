@@ -9,16 +9,15 @@
             <div class="sub">{{chenkedSub(item.gdStatus)}}</div>
             <div class="number">{{item.bianhao}}</div>
           </div>
-
           <div :class="['right',{'activeBut':item.gdStatus=='1'||item.gdStatus=='4'||item.gdStatus=='6'}] ">
             {{chenked(item.gdStatus)}}</div>
         </div>
       </van-list>
       <div class="empty" v-else>
-      <van-empty class="custom-image" :image="emptyUrl" description="暂无内容" />
-    </div>
+        <van-empty class="custom-image" :image="emptyUrl" description="暂无内容" />
+      </div>
     </van-pull-refresh>
-    
+
   </div>
 </template>
 
@@ -68,6 +67,7 @@
         const res = await apiOrderList({
           userId: window.localStorage.getItem("userId"),
           token: window.localStorage.getItem('token')
+          // token: 'CEF5832E38898C62715A8EDCF06AA2A6'
         })
         let orderList = res.list || []
         // 如果返回的数组是空或数组长度是0
@@ -242,9 +242,15 @@
     border-radius: 16px;
   }
 
-  // ::v-deep .van-pull-refresh {
-  //   height: 100%;
-  // }
+  ::v-deep .van-pull-refresh {
+    height: 100%;
+    overflow: scroll;
+  }
+
+  ::v-deep .van-pull-refresh::-webkit-scrollbar {
+    display: none;
+    /* Chrome Safari */
+  }
 
   .left {
     flex: 1;
@@ -285,12 +291,11 @@
     border-radius: 8px;
   }
 
-  .empty{
-        position: absolute;
+  .empty {
+    position: absolute;
     top: 30%;
     left: 50%;
     transform: translate(-50%, -30%);
     width: 100%;
-}
-  
+  }
 </style>

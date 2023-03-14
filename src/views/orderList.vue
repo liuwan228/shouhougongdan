@@ -35,7 +35,7 @@
     watch: {},
     created() { },
     mounted() {
-      this.getOrderProList()
+      // this.getOrderProList()
     },
     methods: {
       async getOrderProList() {
